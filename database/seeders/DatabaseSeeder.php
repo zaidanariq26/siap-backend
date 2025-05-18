@@ -23,9 +23,9 @@ class DatabaseSeeder extends Seeder
 	// gender ENUM('L', 'P'), -- L untuk laki-laki, P untuk perempuan
 	// nisn VARCHAR(20),
 	// birthplace VARCHAR(100),
-	// birthday DATE,
+	// birthdate DATE,
 	// class VARCHAR(50),
 	// password VARCHAR(255),
-	// email VARCHAR(100),
+	// email VARCHAR(100)
 	// );
 }

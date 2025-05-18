@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Teacher extends Model
 {
-	protected $guarded = ["id"];
+	protected $guarded = ["id_teacher"];
 
 	protected $primaryKey = "id_teacher";
 

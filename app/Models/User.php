@@ -8,11 +8,12 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
 	/** @use HasFactory<\Database\Factories\UserFactory> */
-	use HasFactory, Notifiable;
+	use HasFactory, Notifiable, SoftDeletes;
 
 	protected $primaryKey = "id_user";
 
@@ -71,5 +72,35 @@ class User extends Authenticatable
 	public function studentHomeroom(): HasMany
 	{
 		return $this->hasMany(Student::class, "homeroom_teacher_id", "id_user");
+	}
+
+	/**
+	 * Get all internship records where the user is the student.
+	 *
+	 * @return HasMany
+	 */
+	public function studentInternships(): HasMany
+	{
+		return $this->hasMany(Internship::class, "student_id", "id_user");
+	}
+
+	/**
+	 * Get all internship records where the user is the teacher.
+	 *
+	 * @return HasMany
+	 */
+	public function teacherInternships(): HasMany
+	{
+		return $this->hasMany(Internship::class, "teacher_id", "id_user");
+	}
+
+	/**
+	 * Get all attendance records that associated with auth student
+	 *
+	 * @return HasMany
+	 */
+	public function attendances(): HasMany
+	{
+		return $this->hasMany(Attendance::class, "student_id", "id_user");
 	}
 }

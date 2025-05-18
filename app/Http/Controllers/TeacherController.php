@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class TeacherController extends Controller
 {
-	public function getAllHomeroomTeacher()
+	public function getAllHomeroomTeachers()
 	{
 		try {
 			$homerooms = User::where("role", "wali_kelas")->get();
@@ -23,6 +23,28 @@ class TeacherController extends Controller
 			return response()->json(
 				[
 					"code" => 500,
+					"message" => "Gagal memuat data. Silakan refresh halaman dan coba lagi.",
+					"error" => $e->getMessage(),
+				],
+				500
+			);
+		}
+	}
+
+	public function getAllTeachers()
+	{
+		try {
+			$teachers = User::whereNot("role", "peserta_didik")->select("id_user", "name", "email", "role")->get();
+			return response()->json(
+				[
+					"message" => "Data guru pembimbing berhasil didapatkan.",
+					"data" => $teachers,
+				],
+				200
+			);
+		} catch (\Exception $e) {
+			return response()->json(
+				[
 					"message" => "Gagal memuat data. Silakan refresh halaman dan coba lagi.",
 					"error" => $e->getMessage(),
 				],

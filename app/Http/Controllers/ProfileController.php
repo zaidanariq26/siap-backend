@@ -51,7 +51,7 @@ class ProfileController extends Controller
 			$user = Cache::store("database")->remember("auth_user_{$userId}", now()->addMinutes(120), function () use ($user) {
 				$user->loadMissing(["student", "student.homeroomTeacher"]);
 				$user->student->makeHidden(["created_at", "updated_at"]);
-				$user->makeHidden(["email_verified_at", "created_at", "updated_at"]);
+				$user->makeHidden(["email_verified_at", "created_at", "updated_at", "deleted_at"]);
 				return $user;
 			});
 

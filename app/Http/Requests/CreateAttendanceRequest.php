@@ -1,0 +1,49 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class CreateAttendanceRequest extends FormRequest
+{
+	/**
+	 * Determine if the user is authorized to make this request.
+	 */
+	public function authorize(): bool
+	{
+		return auth()->user()->role === "peserta_didik";
+	}
+
+	/**
+	 * Get the validation rules that apply to the request.
+	 *
+	 * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+	 */
+	public function rules(): array
+	{
+		return [
+			"status" => "required|in:present,excused,sick",
+			"latitude" => "required|numeric|between:-90,90",
+			"longitude" => "required|numeric|between:-180,180",
+			"note" => "nullable|string",
+		];
+	}
+
+	public function messages()
+	{
+		return [
+			"status.required" => "Status kehadiran wajib diisi.",
+			"status.in" => "Status kehadiran harus salah satu dari: hadir, izin, atau sakit.",
+
+			"latitude.required" => "Latitude wajib diisi.",
+			"latitude.numeric" => "Latitude harus berupa angka.",
+			"latitude.between" => "Latitude harus berada antara -90 hingga 90.",
+
+			"longitude.required" => "Longitude wajib diisi.",
+			"longitude.numeric" => "Longitude harus berupa angka.",
+			"longitude.between" => "Longitude harus berada antara -180 hingga 180.",
+
+			"note.string" => "Catatan harus berupa teks.",
+		];
+	}
+}

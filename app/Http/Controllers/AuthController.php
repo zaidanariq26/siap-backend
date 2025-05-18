@@ -76,19 +76,17 @@ class AuthController extends Controller
 			$userId = Auth::id();
 
 			$user = Cache::store("database")->remember("auth_user_{$userId}", now()->addMinutes(120), function () use ($userId) {
-				$user = Auth::user()->loadMissing(["student", "student.homeroomTeacher"]);
+				$user = Auth::user()->loadMissing(["student", "student.homeroomTeacher:id_user,name,email,role"]);
 				$user->student->makeHidden(["created_at", "updated_at"]);
-				$user->makeHidden(["email_verified_at", "created_at", "updated_at"]);
-
+				$user->makeHidden(["email_verified_at", "created_at", "updated_at", "deleted_at"]);
 				return $user;
 			});
 
-			return response()->json(["code" => 201, "message" => "Registrasi berhasil", "data" => $user], 201);
+			return response()->json(["message" => "Registrasi berhasil", "data" => $user], 201);
 		} catch (\Exception $e) {
 			DB::rollBack();
 			return response()->json(
 				[
-					"code" => 500,
 					"message" => "Terjadi kesalahan saat register. Silahkan coba lagi!",
 					"error" => app()->environment("local") ? $e->getMessage() : null,
 				],
@@ -107,16 +105,17 @@ class AuthController extends Controller
 			if (Auth::attempt($credentials)) {
 				$request->session()->regenerate();
 				$userId = Auth::id();
+
+				Cache::forget("auth_user_{$userId}");
 				$user = Cache::remember("auth_user_{$userId}", now()->addHours(2), function () use ($userId) {
-					$user = Auth::user()->loadMissing(["student", "student.homeroomTeacher"]);
+					$user = Auth::user()->loadMissing(["student", "student.homeroomTeacher:id_user,name,email,role"]);
 					$user->student->makeHidden(["created_at", "updated_at"]);
-					$user->makeHidden(["email_verified_at", "created_at", "updated_at"]);
+					$user->makeHidden(["email_verified_at", "created_at", "updated_at", "deleted_at"]);
 					return $user;
 				});
 
 				return response()->json(
 					[
-						"code" => 200,
 						"message" => "Login berhasil!",
 						"data" => $user,
 					],
@@ -125,7 +124,6 @@ class AuthController extends Controller
 			}
 			return response()->json(
 				[
-					"code" => 401,
 					"message" => "Email dan kata sandi tidak valid.",
 				],
 				401
@@ -151,41 +149,6 @@ class AuthController extends Controller
 		$request->session()->regenerateToken();
 		return response()->json([
 			"message" => "Logout sukses",
-			"code" => 200,
 		]);
-	}
-
-	public function authUser()
-	{
-		try {
-			$userId = Auth::id();
-
-			if (!$userId) {
-				return response()->json(
-					[
-						"message" => "Pengguna belum login atau sesi telah berakhir.",
-					],
-					401
-				);
-			}
-
-			$user = Cache::store("database")->remember("auth_user_{$userId}", now()->addMinutes(120), function () use ($userId) {
-				$user = Auth::user()->loadMissing(["student", "student.homeroomTeacher"]);
-				$user->student->makeHidden(["created_at", "updated_at"]);
-				$user->makeHidden(["email_verified_at", "created_at", "updated_at"]);
-
-				return $user;
-			});
-
-			return response()->json(["data" => $user]);
-		} catch (\Throwable $e) {
-			return response()->json(
-				[
-					"message" => "Terjadi kesalahan saat mengambil data pengguna.",
-					"error" => $e->getMessage(),
-				],
-				500
-			);
-		}
 	}
 }

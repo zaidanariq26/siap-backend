@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Student extends Model
 {
-	protected $guarded = ["id"];
+	protected $guarded = ["id_student"];
 
 	protected $primaryKey = "id_student";
 
