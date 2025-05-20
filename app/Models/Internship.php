@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Internship extends Model
 {
@@ -29,5 +30,15 @@ class Internship extends Model
 	public function teacher(): BelongsTo
 	{
 		return $this->belongsTo(User::class, "teacher_id", "id_user");
+	}
+
+	/**
+	 * Get all attendances that connected by this internship
+	 *
+	 * @return HasMany
+	 */
+	public function attendances(): HasMany
+	{
+		return $this->hasMany(Attendance::class, "internship_id", "id_internship");
 	}
 }

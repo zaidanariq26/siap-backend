@@ -29,23 +29,14 @@ class AttendanceController extends Controller
 				);
 			}
 
-			$alreadyAttended = $user
-				->attendances()
-				->whereDate("created_at", now()->toDateString())
-				->exists();
-
-			if ($alreadyAttended) {
-				return response()->json(
-					[
-						"message" => "Anda sudah melakukan presensi hari ini.",
-					],
-					409
-				);
-			}
-
 			DB::beginTransaction();
 
-			$attendance = Attendance::create([
+			$existingAttendance = $user
+				->attendances()
+				->whereDate("date", now()->toDateString())
+				->first();
+
+			$attendanceData = [
 				"student_id" => $user->id_user,
 				"internship_id" => $ongoingInternship->id_internship,
 				"status" => $validatedData["status"],
@@ -54,7 +45,26 @@ class AttendanceController extends Controller
 				"latitude" => $validatedData["latitude"],
 				"longitude" => $validatedData["longitude"],
 				"note" => $validatedData["note"] ?? null,
-			]);
+				"expired_at" => null,
+			];
+
+			if ($existingAttendance) {
+				if ($existingAttendance->status === "no_description") {
+					$existingAttendance->update($attendanceData);
+					$attendance = $existingAttendance;
+				} else {
+					DB::rollBack();
+					return response()->json(
+						[
+							"message" => "Anda sudah melakukan presensi hari ini.",
+						],
+						409
+					);
+				}
+			} else {
+				// Buat presensi baru
+				$attendance = Attendance::create($attendanceData);
+			}
 
 			DB::commit();
 
@@ -90,8 +100,12 @@ class AttendanceController extends Controller
 				);
 			}
 
-			$attendances = Attendance::where("student_id", $userId)->get();
-			$attendances->makeHidden(["created_at", "updated_at"]);
+			$attendances = Attendance::where("student_id", $userId)
+				->where("status", "!=", "off")
+				->whereHas("internship", function ($query) {
+					$query->where("status", "ongoing");
+				})
+				->get();
 
 			return response()->json([
 				"message" => "Data presensi berhasil didapatkan",

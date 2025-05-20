@@ -20,9 +20,10 @@ return new class extends Migration {
 			$table->enum("status", ["present", "excused", "sick", "no_description", "off"]);
 			$table->string("note")->nullable();
 			$table->date("date");
-			$table->time("time");
-			$table->decimal("latitude", 10, 8);
-			$table->decimal("longitude", 11, 8);
+			$table->time("time")->nullable();
+			$table->decimal("latitude", 10, 8)->nullable();
+			$table->decimal("longitude", 11, 8)->nullable();
+			$table->timestamp("expired_at")->nullable();
 			$table->timestamps();
 		});
 	}

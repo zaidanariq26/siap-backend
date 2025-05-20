@@ -35,11 +35,11 @@ class CreateAttendanceRequest extends FormRequest
 			"status.required" => "Status kehadiran wajib diisi.",
 			"status.in" => "Status kehadiran harus salah satu dari: hadir, izin, atau sakit.",
 
-			"latitude.required" => "Latitude wajib diisi.",
+			"latitude.required" => "Latitude tidak tersedia",
 			"latitude.numeric" => "Latitude harus berupa angka.",
 			"latitude.between" => "Latitude harus berada antara -90 hingga 90.",
 
-			"longitude.required" => "Longitude wajib diisi.",
+			"longitude.required" => "Longitude tidak tersedia.",
 			"longitude.numeric" => "Longitude harus berupa angka.",
 			"longitude.between" => "Longitude harus berada antara -180 hingga 180.",
 

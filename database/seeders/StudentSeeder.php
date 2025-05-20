@@ -16,6 +16,7 @@ class StudentSeeder extends Seeder
 	{
 		Student::create([
 			"user_id" => 5,
+			"npsn" => "20100159",
 			"firstname" => "Halimah",
 			"lastname" => "Adnan",
 			"nisn" => 99999999,
