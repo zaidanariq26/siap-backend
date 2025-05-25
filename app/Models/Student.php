@@ -12,7 +12,7 @@ class Student extends Model
 	protected $primaryKey = "id_student";
 
 	/**
-	 * Get the user that owns the Student
+	 * Get the user associated with this student data.
 	 *
 	 */
 	public function user(): BelongsTo
@@ -21,7 +21,7 @@ class Student extends Model
 	}
 
 	/**
-	 * Get the teacher that owns the Student as a homeroom
+	 * Get the teacher that owns the Student as a homeroom.
 	 *
 	 */
 	public function homeroomTeacher(): BelongsTo

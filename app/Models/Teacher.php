@@ -13,20 +13,11 @@ class Teacher extends Model
 	protected $primaryKey = "id_teacher";
 
 	/**
-	 * Get the user that owns the Teacher
+	 * Get the user associated with this teacher data.
 	 *
 	 */
 	public function user(): BelongsTo
 	{
 		return $this->belongsTo(User::class, "user_id");
-	}
-
-	/**
-	 * Get the user associated with the Student as homeroom
-	 *
-	 */
-	public function students(): HasMany
-	{
-		return $this->hasMany(Student::class, "homeroom_teacher_id", "id_teacher");
 	}
 }

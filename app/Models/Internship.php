@@ -13,7 +13,7 @@ class Internship extends Model
 	protected $guarded = ["id_internship"];
 
 	/**
-	 * Get the student data that doing the intern
+	 * Get the user who is a student and doing this internship.
 	 *
 	 * @return BelongsTo
 	 */
@@ -23,7 +23,7 @@ class Internship extends Model
 	}
 
 	/**
-	 * Get the teacher that following the intern
+	 * Get the teacher that supervises this internship
 	 *
 	 * @return BelongsTo
 	 */
@@ -33,12 +33,22 @@ class Internship extends Model
 	}
 
 	/**
-	 * Get all attendances that connected by this internship
+	 * Get all attendances connected to this internship.
 	 *
 	 * @return HasMany
 	 */
 	public function attendances(): HasMany
 	{
 		return $this->hasMany(Attendance::class, "internship_id", "id_internship");
+	}
+
+	/**
+	 * Get all journals connected to this internship.
+	 *
+	 * @return HasMany
+	 */
+	public function journals(): HasMany
+	{
+		return $this->hasMany(Journal::class, "internship_id", "id_internship");
 	}
 }

@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAttendanceRequest;
 use App\Models\Attendance;
+use App\Models\Journal;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AttendanceController extends Controller
 {
@@ -18,14 +20,15 @@ class AttendanceController extends Controller
 		try {
 			$user = Auth::user();
 
-			$ongoingInternship = $user->studentInternships->where("status", "ongoing")->first();
+			$ongoingInternship = $user->internships->where("status", "ongoing")->first();
 
 			if (!$ongoingInternship) {
 				return response()->json(
 					[
+						"status" => "no_ongoing_internship",
 						"message" => "Anda tidak memiliki data PKL yang sedang berlangsung.",
 					],
-					400
+					404
 				);
 			}
 
@@ -48,9 +51,12 @@ class AttendanceController extends Controller
 				"expired_at" => null,
 			];
 
+			$statusJournal = $attendanceData["status"] !== "present" ? "not_present" : "not_created";
+
 			if ($existingAttendance) {
 				if ($existingAttendance->status === "no_description") {
 					$existingAttendance->update($attendanceData);
+					$existingAttendance->journal->update(["status" => $statusJournal]);
 					$attendance = $existingAttendance;
 				} else {
 					DB::rollBack();
@@ -62,20 +68,26 @@ class AttendanceController extends Controller
 					);
 				}
 			} else {
-				// Buat presensi baru
 				$attendance = Attendance::create($attendanceData);
+
+				Journal::create([
+					"student_id" => $attendance->studnent_id,
+					"internship_id" => $attendance->internship_id,
+					"attendance_id" => $attendance->id_attendance,
+					"date" => $attendance->date,
+					"status" => $statusJournal,
+				]);
 			}
 
 			DB::commit();
 
-			$attendance->makeHidden(["created_at", "updated_at"]);
-
 			return response()->json([
-				"message" => "Presensi berhasil dicatat.",
+				"message" => "Presensi berhasil dicatat",
 				"data" => $attendance,
 			]);
 		} catch (\Throwable $e) {
 			DB::rollBack();
+			Log::error($e);
 			return response()->json(
 				[
 					"message" => "Terjadi kesalahan saat membuat data presensi. Silakan coba lagi!",
@@ -91,20 +103,12 @@ class AttendanceController extends Controller
 		try {
 			$userId = Auth::id();
 
-			if (!$userId) {
-				return response()->json(
-					[
-						"message" => "Pengguna belum login atau sesi telah berakhir.",
-					],
-					401
-				);
-			}
-
 			$attendances = Attendance::where("student_id", $userId)
 				->where("status", "!=", "off")
 				->whereHas("internship", function ($query) {
 					$query->where("status", "ongoing");
 				})
+				->orderBy("created_at", "desc")
 				->get();
 
 			return response()->json([

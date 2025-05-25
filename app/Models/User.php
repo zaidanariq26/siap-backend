@@ -45,7 +45,7 @@ class User extends Authenticatable
 	}
 
 	/**
-	 * Get the user associated with the Student
+	 * Get the student's data from the Student model as a student
 	 *
 	 * @return HasOne
 	 */
@@ -55,7 +55,7 @@ class User extends Authenticatable
 	}
 
 	/**
-	 * Get the user associated with the Teacher
+	 * Get the teacher's data from the Teacher model as a teacher
 	 *
 	 * @return HasOne
 	 */
@@ -65,42 +65,52 @@ class User extends Authenticatable
 	}
 
 	/**
-	 * Get the student associated with the Homeroom Teacher
+	 * Get all students assigned to this user as their homeroom teacher.
 	 *
 	 * @return HasMany
 	 */
-	public function studentHomeroom(): HasMany
+	public function homeroomStudents(): HasMany
 	{
 		return $this->hasMany(Student::class, "homeroom_teacher_id", "id_user");
 	}
 
 	/**
-	 * Get all internship records where the user is the student.
+	 * Get all internship records associated with this user as a student.
 	 *
 	 * @return HasMany
 	 */
-	public function studentInternships(): HasMany
+	public function internships(): HasMany
 	{
-		return $this->hasMany(Internship::class, "student_id", "id_user");
+		return $this->hasMany(Internship::class, "user_id", "id_user");
 	}
 
 	/**
-	 * Get all internship records where the user is the teacher.
+	 * Get all internship records where the user is the supervising teacher.
 	 *
 	 * @return HasMany
 	 */
-	public function teacherInternships(): HasMany
+	public function supervisedInternships(): HasMany
 	{
-		return $this->hasMany(Internship::class, "teacher_id", "id_user");
+		return $this->hasMany(Internship::class, "user_id", "id_user");
 	}
 
 	/**
-	 * Get all attendance records that associated with auth student
+	 * Get all attendance records associated with this user as a student.
 	 *
 	 * @return HasMany
 	 */
 	public function attendances(): HasMany
 	{
-		return $this->hasMany(Attendance::class, "student_id", "id_user");
+		return $this->hasMany(Attendance::class, "user_id", "id_user");
+	}
+
+	/**
+	 * Get all journal records associated with this user as a student.
+	 *
+	 * @return HasMany
+	 */
+	public function journals(): HasMany
+	{
+		return $this->hasMany(Journal::class, "user_id", "id_user");
 	}
 }

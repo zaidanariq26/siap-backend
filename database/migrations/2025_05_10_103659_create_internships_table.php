@@ -12,8 +12,10 @@ return new class extends Migration {
 	{
 		Schema::create("internships", function (Blueprint $table) {
 			$table->bigIncrements("id_internship");
+
 			$table->unsignedBigInteger("student_id");
 			$table->foreign("student_id")->references("id_user")->on("users")->onDelete("cascade")->onUpdate("cascade");
+
 			$table->unsignedBigInteger("teacher_id");
 			$table->foreign("teacher_id")->references("id_user")->on("users")->onDelete("cascade")->onUpdate("cascade");
 

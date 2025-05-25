@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Attendance;
 use App\Models\Internship;
+use App\Models\Journal;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -44,13 +45,13 @@ class GenerateMissingAttendance extends Command
 
 		try {
 			foreach ($internships as $internship) {
-				$studentId = $internship->student_id;
+				$studentId = $internship->user_id;
 
 				if (!$studentId) {
 					continue;
 				}
 
-				$alreadyAttended = Attendance::where("student_id", $studentId)->whereDate("date", $today)->exists();
+				$alreadyAttended = Attendance::where("user_id", $studentId)->whereDate("date", $today)->exists();
 
 				if (!$alreadyAttended) {
 					$attendanceData = [
@@ -64,7 +65,16 @@ class GenerateMissingAttendance extends Command
 						$attendanceData["expired_at"] = $today->copy()->addDays(2);
 					}
 
-					Attendance::create($attendanceData);
+					$attendance = Attendance::create($attendanceData);
+
+					Journal::create([
+						"user_id" => $attendance->student_id,
+						"internship_id" => $attendance->internship_id,
+						"attendance_id" => $attendance->id_attendance,
+						"status" => "not_present",
+						"date" => $attendance->date,
+					]);
+
 					$studentIds[] = $studentId;
 					$created++;
 				}

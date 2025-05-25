@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\InternshipController;
+use App\Http\Controllers\JournalController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TeacherController;
@@ -29,6 +30,10 @@ Route::middleware("auth")->group(function () {
 	// Handle Attendance
 	Route::post("/attendances/create", [AttendanceController::class, "createAttendance"])->middleware(["checkRole:peserta_didik", "checkProfile"]);
 	Route::get("/attendances", [AttendanceController::class, "getAllAttendances"])->middleware(["checkRole:peserta_didik"]);
+
+	// Handle Journal
+	Route::get("/journals", [JournalController::class, "getAllJournals"])->middleware(["checkRole:peserta_didik"]);
+	Route::put("/journals/{journal}/update", [JournalController::class, "updateJournalById"])->middleware(["checkRole:peserta_didik", "checkProfile"]);
 });
 
 require __DIR__ . "/auth.php";

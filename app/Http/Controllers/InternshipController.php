@@ -15,12 +15,10 @@ class InternshipController extends Controller
 		$validatedData = $request->validated();
 
 		try {
-			
-
 			$user = Auth::user();
-			$validatedData["student_id"] = $user->id_user;
+			$validatedData["user_id"] = $user->id_user;
 
-			Internship::where("student_id", $user->id_user)
+			Internship::where("user_id", $user->id_user)
 				->whereIn("status", ["pending", "ongoing"])
 				->update(["status" => "completed"]);
 
@@ -86,7 +84,7 @@ class InternshipController extends Controller
 
 			$today = Carbon::today();
 
-			$internship = Internship::where("student_id", $userId)
+			$internship = Internship::where("user_id", $userId)
 				->whereIn("status", ["pending", "ongoing"])
 				->orderByDesc("start_date")
 				->first();
@@ -133,7 +131,7 @@ class InternshipController extends Controller
 				);
 			}
 
-			$internships = Internship::where("student_id", $userId)->get();
+			$internships = Internship::where("user_id", $userId)->get();
 			$internships->makeHidden(["created_at", "updated_at"]);
 
 			return response()->json([

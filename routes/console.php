@@ -9,5 +9,5 @@ use Illuminate\Support\Facades\Schedule;
 // 	$this->comment(Inspiring::quote());
 // })->purpose("Display an inspiring quote");
 
-// Schedule::command("internship:update-status")->everyMinute()->withoutOverlapping();
-Schedule::command("attendance:generate-missing")->dailyAt("23:45")->withoutOverlapping();
+Schedule::command("internship:update-status")->dailyAt("00:01")->withoutOverlapping();
+Schedule::command("attendance:generate-missing")->dailyAt("09:53")->withoutOverlapping();

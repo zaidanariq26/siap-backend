@@ -10,8 +10,8 @@ return new class extends Migration {
 	 */
 	public function up(): void
 	{
-		Schema::create("attendances", function (Blueprint $table) {
-			$table->bigIncrements("id_attendance");
+		Schema::create("journals", function (Blueprint $table) {
+			$table->ulid("id_journal")->primary();
 
 			$table->unsignedBigInteger("student_id");
 			$table->foreign("student_id")->references("id_user")->on("users")->onDelete("cascade")->onUpdate("cascade");
@@ -19,13 +19,14 @@ return new class extends Migration {
 			$table->unsignedBigInteger("internship_id");
 			$table->foreign("internship_id")->references("id_internship")->on("internships")->onDelete("cascade")->onUpdate("cascade");
 
-			$table->enum("status", ["present", "excused", "sick", "no_description", "off"]);
-			$table->string("note")->nullable();
+			$table->unsignedBigInteger("attendance_id");
+			$table->foreign("attendance_id")->references("id_attendance")->on("attendances")->onDelete("cascade")->onUpdate("cascade");
+
+			$table->enum("status", ["not_created", "in_review", "needs_revision", "approved", "not_present"])->default("not_created");
 			$table->date("date");
-			$table->time("time")->nullable();
-			$table->decimal("latitude", 10, 8)->nullable();
-			$table->decimal("longitude", 11, 8)->nullable();
-			$table->timestamp("expired_at")->nullable();
+			$table->string("description")->nullable();
+			$table->string("image_path")->nullable();
+
 			$table->timestamps();
 		});
 	}
@@ -35,6 +36,6 @@ return new class extends Migration {
 	 */
 	public function down(): void
 	{
-		Schema::dropIfExists("attendances");
+		Schema::dropIfExists("journals");
 	}
 };
