@@ -81,7 +81,7 @@ class User extends Authenticatable
 	 */
 	public function internships(): HasMany
 	{
-		return $this->hasMany(Internship::class, "user_id", "id_user");
+		return $this->hasMany(Internship::class, "student_id", "id_user");
 	}
 
 	/**
@@ -91,7 +91,7 @@ class User extends Authenticatable
 	 */
 	public function supervisedInternships(): HasMany
 	{
-		return $this->hasMany(Internship::class, "user_id", "id_user");
+		return $this->hasMany(Internship::class, "teacher_id", "id_user");
 	}
 
 	/**
@@ -101,7 +101,7 @@ class User extends Authenticatable
 	 */
 	public function attendances(): HasMany
 	{
-		return $this->hasMany(Attendance::class, "user_id", "id_user");
+		return $this->hasMany(Attendance::class, "student_id", "id_user");
 	}
 
 	/**
@@ -111,6 +111,6 @@ class User extends Authenticatable
 	 */
 	public function journals(): HasMany
 	{
-		return $this->hasMany(Journal::class, "user_id", "id_user");
+		return $this->hasMany(Journal::class, "student_id", "id_user");
 	}
 }

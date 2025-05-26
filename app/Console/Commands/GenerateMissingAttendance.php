@@ -32,7 +32,8 @@ class GenerateMissingAttendance extends Command
 	public function handle()
 	{
 		$today = Carbon::today();
-		$dayOfWeek = $today->dayOfWeekIso; // 1 = Monday, ..., 7 = Sunday
+		$dayOfWeek = $today->dayOfWeekIso;
+		// $dayOfWeek = 7;
 
 		$status = in_array($dayOfWeek, [6, 7]) ? "off" : "no_description";
 
@@ -45,13 +46,13 @@ class GenerateMissingAttendance extends Command
 
 		try {
 			foreach ($internships as $internship) {
-				$studentId = $internship->user_id;
+				$studentId = $internship->student_id;
 
 				if (!$studentId) {
 					continue;
 				}
 
-				$alreadyAttended = Attendance::where("user_id", $studentId)->whereDate("date", $today)->exists();
+				$alreadyAttended = Attendance::where("student_id", $studentId)->whereDate("date", $today)->exists();
 
 				if (!$alreadyAttended) {
 					$attendanceData = [
@@ -67,13 +68,15 @@ class GenerateMissingAttendance extends Command
 
 					$attendance = Attendance::create($attendanceData);
 
-					Journal::create([
-						"user_id" => $attendance->student_id,
-						"internship_id" => $attendance->internship_id,
-						"attendance_id" => $attendance->id_attendance,
-						"status" => "not_present",
-						"date" => $attendance->date,
-					]);
+					if ($attendance->status !== "off") {
+						Journal::create([
+							"student_id" => $attendance->student_id,
+							"internship_id" => $attendance->internship_id,
+							"attendance_id" => $attendance->id_attendance,
+							"status" => "not_present",
+							"date" => $attendance->date,
+						]);
+					}
 
 					$studentIds[] = $studentId;
 					$created++;

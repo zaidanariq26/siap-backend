@@ -166,7 +166,7 @@ class AuthController extends Controller
 			SendResetPasswordMail::dispatch($user->email, $resetLink, $user->name);
 
 			return response()->json([
-				"message" => "Email untuk mereset kata sandi Anda telah dikirim.",
+				"message" => "Silakan periksa kotak masuk atau folder spam Anda dan ikuti petunjuk yang diberikan untuk mengatur ulang kata sandi Anda.",
 			]);
 		} catch (\Throwable $th) {
 			Log::error("Forgot password error: " . $th->getMessage());

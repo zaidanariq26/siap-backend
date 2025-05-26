@@ -18,16 +18,7 @@ class JournalController extends Controller
 		try {
 			$userId = Auth::id();
 
-			if (!$userId) {
-				return response()->json(
-					[
-						"message" => "Pengguna belum login atau sesi telah berakhir.",
-					],
-					401
-				);
-			}
-
-			$journals = Journal::where("user_id", $userId)
+			$journals = Journal::where("student_id", $userId)
 				->whereHas("internship", function ($query) {
 					$query->where("status", "ongoing");
 				})
@@ -57,8 +48,18 @@ class JournalController extends Controller
 		try {
 			$userId = Auth::id();
 
-			if ($journal->user_id !== $userId) {
+			if ($journal->student_id !== $userId) {
 				return response()->json(["message" => "Akses ditolak."], 403);
+			}
+
+			if (in_array($journal->attendance->status, ["no_description", "off"])) {
+				return response()->json(
+					[
+						"message" => "Tidak dapat mengakses karena Anda belum melakukan presensi.",
+						"status" => "attendance_missing",
+					],
+					403
+				);
 			}
 
 			if ($request->hasFile("image_path")) {

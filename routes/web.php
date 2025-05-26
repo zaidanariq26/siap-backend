@@ -25,10 +25,11 @@ Route::middleware("auth")->group(function () {
 	// Handle Internship
 	Route::get("/internships", [InternshipController::class, "getAllInternships"])->middleware("checkRole:peserta_didik");
 	Route::post("/internships/create", [InternshipController::class, "addStudentInternship"])->middleware(["checkRole:peserta_didik", "checkProfile"]);
-	Route::get("/internships/active-status-check", [InternshipController::class, "getOrUpdateActiveInternship"])->middleware("checkRole:peserta_didik");
+	// Route::get("/internships/active-status-check", [InternshipController::class, "getOrUpdateActiveInternship"])->middleware("checkRole:peserta_didik");
 
 	// Handle Attendance
 	Route::post("/attendances/create", [AttendanceController::class, "createAttendance"])->middleware(["checkRole:peserta_didik", "checkProfile"]);
+	Route::put("/attendances/{attendance}/update", [AttendanceController::class, "updateNoDescriptionAttendance"])->middleware(["checkRole:peserta_didik", "checkProfile"]);
 	Route::get("/attendances", [AttendanceController::class, "getAllAttendances"])->middleware(["checkRole:peserta_didik"]);
 
 	// Handle Journal

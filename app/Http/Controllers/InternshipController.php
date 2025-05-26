@@ -16,9 +16,10 @@ class InternshipController extends Controller
 
 		try {
 			$user = Auth::user();
-			$validatedData["user_id"] = $user->id_user;
 
-			Internship::where("user_id", $user->id_user)
+			$validatedData["student_id"] = $user->id_user;
+
+			Internship::where("student_id", $user->id_user)
 				->whereIn("status", ["pending", "ongoing"])
 				->update(["status" => "completed"]);
 
@@ -45,10 +46,10 @@ class InternshipController extends Controller
 			}
 
 			$internship = Internship::create($validatedData);
-			$internship->loadMissing(["student:id_user,name,email,role", "teacher:id_user,name,email,role"]);
-			$internship->makeHidden("updated_at", "created_at");
+			$internship->loadMissing(["student", "teacher"]);
 
 			DB::commit();
+
 			return response()->json(
 				[
 					"message" => "Data PKL Anda telah berhasil disimpan",
@@ -68,71 +69,12 @@ class InternshipController extends Controller
 		}
 	}
 
-	public function getOrUpdateActiveInternship()
-	{
-		try {
-			$userId = Auth::id();
-
-			if (!$userId) {
-				return response()->json(
-					[
-						"message" => "Pengguna belum login atau sesi telah berakhir.",
-					],
-					401
-				);
-			}
-
-			$today = Carbon::today();
-
-			$internship = Internship::where("user_id", $userId)
-				->whereIn("status", ["pending", "ongoing"])
-				->orderByDesc("start_date")
-				->first();
-
-			if ($internship) {
-				$start = Carbon::parse($internship->start_date);
-				$end = Carbon::parse($internship->end_date);
-
-				if ($internship->status === "pending" && $today->between($start, $end)) {
-					$internship->status = "ongoing";
-					$internship->save();
-				}
-
-				$internship->loadMissing("student:id_user,name,email,role", "teacher:id_user,name,email,role");
-				$internship->makeHidden("updated_at", "created_at");
-			}
-
-			return response()->json([
-				"message" => "Data PKL berhasil didapatkan.",
-				"data" => $internship,
-			]);
-		} catch (\Throwable $e) {
-			return response()->json(
-				[
-					"message" => "Terjadi kesalahan saat mengambil data PKL.",
-					"error" => app()->environment("local") ? $e->getMessage() : null,
-				],
-				500
-			);
-		}
-	}
-
 	public function getAllInternships()
 	{
 		try {
 			$userId = Auth::id();
 
-			if (!$userId) {
-				return response()->json(
-					[
-						"message" => "Pengguna belum login atau sesi telah berakhir.",
-					],
-					401
-				);
-			}
-
-			$internships = Internship::where("user_id", $userId)->get();
-			$internships->makeHidden(["created_at", "updated_at"]);
+			$internships = Internship::where("student_id", $userId)->get();
 
 			return response()->json([
 				"message" => "Data PKL berhasil didapatkan",
