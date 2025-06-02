@@ -5,12 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 
 class Internship extends Model
 {
-	protected $primaryKey = "id_internship";
+	use HasUlids;
 
+	protected $primaryKey = "id_internship";
 	protected $guarded = ["id_internship"];
+	public $incrementing = false;
+	protected $keyType = "string";
 
 	/**
 	 * Get the user who is a student and doing this internship.

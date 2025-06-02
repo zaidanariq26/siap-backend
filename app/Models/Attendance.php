@@ -5,12 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 
 class Attendance extends Model
 {
-	protected $primaryKey = "id_attendance";
+	use HasUlids;
 
+	protected $primaryKey = "id_attendance";
 	protected $guarded = ["id_attendance"];
+	public $incrementing = false;
+	protected $keyType = "string";
 
 	/**
 	 * Get the student user associated with this attendance record.
@@ -20,6 +24,16 @@ class Attendance extends Model
 	public function student(): BelongsTo
 	{
 		return $this->belongsTo(User::class, "student_id", "id_user");
+	}
+
+	/**
+	 * Get the supervised teacher user associated with this attendance record.
+	 *
+	 * @return BelongsTo
+	 */
+	public function teacher(): BelongsTo
+	{
+		return $this->belongsTo(User::class, "teacher_id", "id_user");
 	}
 
 	/**

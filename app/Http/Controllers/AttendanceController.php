@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class AttendanceController extends Controller
 {
@@ -37,17 +38,33 @@ class AttendanceController extends Controller
 			$existingAttendance = $user
 				->attendances()
 				->whereDate("date", now()->toDateString())
+				->whereHas("internship", function ($query) {
+					$query->where("status", "ongoing");
+				})
 				->first();
+
+			if ($validatedData["status"] === "sick") {
+				if ($request->hasFile("attachment")) {
+					if ($existingAttendance && $existingAttendance->attachment) {
+						Storage::disk("public")->delete($existingAttendance->attachment);
+					}
+					$attachmentPath = $request->file("attachment")->store("attendance-attachment", "public");
+					$validatedData["attachment"] = $attachmentPath;
+				}
+			}
 
 			$attendanceData = [
 				"student_id" => $user->id_user,
+				"teacher_id" => $ongoingInternship->teacher_id,
 				"internship_id" => $ongoingInternship->id_internship,
 				"status" => $validatedData["status"],
 				"time" => Carbon::now(config("app.timezone"))->format("H:i"),
 				"date" => Carbon::now(config("app.timezone"))->toDateString(),
 				"latitude" => $validatedData["latitude"],
 				"longitude" => $validatedData["longitude"],
+				"accuracy" => $validatedData["accuracy"],
 				"note" => $validatedData["note"] ?? null,
+				"attachment" => $validatedData["attachment"] ?? null,
 				"expired_at" => null,
 			];
 
@@ -64,6 +81,7 @@ class AttendanceController extends Controller
 
 					Journal::create([
 						"student_id" => $existingAttendance->student_id,
+						"teacher_id" => $existingAttendance->teacher_id,
 						"internship_id" => $existingAttendance->internship_id,
 						"attendance_id" => $existingAttendance->id_attendance,
 						"date" => $existingAttendance->date,
@@ -83,6 +101,7 @@ class AttendanceController extends Controller
 
 				Journal::create([
 					"student_id" => $attendance->student_id,
+					"teacher_id" => $attendance->teacher_id,
 					"internship_id" => $attendance->internship_id,
 					"attendance_id" => $attendance->id_attendance,
 					"date" => $attendance->date,
@@ -90,10 +109,12 @@ class AttendanceController extends Controller
 				]);
 			}
 
+			$attendance->loadMissing(["student", "student.student", "student.student.homeroomTeacher", "student.student.majorDetail"]);
+
 			DB::commit();
 
 			return response()->json([
-				"message" => "Presensi berhasil dicatat",
+				"message" => "Presensi Berhasil Dicatat",
 				"data" => $attendance,
 			]);
 		} catch (\Throwable $e) {
@@ -121,6 +142,8 @@ class AttendanceController extends Controller
 				})
 				->orderBy("created_at", "desc")
 				->get();
+
+			$attendances->loadMissing(["student", "student.student", "student.student.homeroomTeacher", "student.student.majorDetail"]);
 
 			Log::info("Data", [$attendances]);
 
@@ -158,6 +181,16 @@ class AttendanceController extends Controller
 
 			DB::beginTransaction();
 
+			if ($validatedData["status"] === "sick") {
+				if ($request->hasFile("attachment")) {
+					if ($attendance && $attendance->attachment) {
+						Storage::disk("public")->delete($attendance->attachment);
+					}
+					$attachmentPath = $request->file("attachment")->store("attendance-attachment", "public");
+					$validatedData["attachment"] = $attachmentPath;
+				}
+			}
+
 			$attendanceData = [
 				"status" => $validatedData["status"],
 				"time" => Carbon::now(config("app.timezone"))->format("H:i"),
@@ -165,6 +198,7 @@ class AttendanceController extends Controller
 				"latitude" => $validatedData["latitude"],
 				"longitude" => $validatedData["longitude"],
 				"note" => $validatedData["note"] ?? null,
+				"attachment" => $validatedData["attachment"] ?? null,
 				"expired_at" => null,
 			];
 
@@ -178,10 +212,12 @@ class AttendanceController extends Controller
 				"status" => $statusJournal,
 			]);
 
+			$attendance->loadMissing(["student", "student.student", "student.student.homeroomTeacher", "student.student.majorDetail"]);
+
 			DB::commit();
 
 			return response()->json([
-				"message" => "Presensi berhasil dicatat",
+				"message" => "Presensi Berhasil Dicatat",
 				"data" => $attendance,
 			]);
 		} catch (\Throwable $e) {
@@ -190,6 +226,72 @@ class AttendanceController extends Controller
 			return response()->json(
 				[
 					"message" => "Terjadi kesalahan saat memperbarui data presensi. Silakan coba lagi!",
+					"error" => app()->environment("local") ? $e->getMessage() : null,
+				],
+				500
+			);
+		}
+	}
+
+	public function getAllStudentAttendances()
+	{
+		try {
+			$user = Auth::user();
+
+			if ($user->role === "wali_kelas") {
+				$attendances = Attendance::where("status", "!=", "off")
+					->where(function ($attendanceQuery) use ($user) {
+						$attendanceQuery
+							->whereHas("internship", function ($internshipQuery) use ($user) {
+								$internshipQuery->where("status", "ongoing")->where("teacher_id", $user->id_user);
+							})
+							->orWhereHas("student", function ($userQuery) use ($user) {
+								$userQuery->whereHas("student", function ($studentQuery) use ($user) {
+									$studentQuery->where("homeroom_teacher_id", $user->id_user);
+								});
+							});
+					})
+					->get();
+			} elseif ($user->role === "kepala_program") {
+				$attendances = Attendance::where("status", "!=", "off")
+					->where(function ($attendanceQuery) use ($user) {
+						$attendanceQuery
+							->whereHas("internship", function ($internshipQuery) use ($user) {
+								$internshipQuery->where("status", "ongoing")->where("teacher_id", $user->id_user);
+							})
+							->orWhereHas("student", function ($userQuery) use ($user) {
+								$userQuery->whereHas("student", function ($studentQuery) use ($user) {
+									$studentQuery->where("major_id", $user->teacher->major_id);
+								});
+							});
+					})
+					->get();
+			} elseif ($user->role === "manajemen_sekolah") {
+				$attendances = Attendance::where("status", "!=", "off")->get();
+			} elseif ($user->role === "guru_pembimbing") {
+				$attendances = Attendance::where("status", "!=", "off")
+					->where(function ($attendanceQuery) use ($user) {
+						$attendanceQuery->whereHas("internship", function ($internshipQuery) use ($user) {
+							$internshipQuery->where("status", "ongoing")->where("teacher_id", $user->id_user);
+						});
+					})
+					->get();
+			}
+
+			$attendances->loadMissing(["student", "teacher", "student.student", "student.student.homeroomTeacher", "student.student.majorDetail"]);
+
+			Log::info("Data", [$attendances]);
+
+			return response()->json([
+				"message" => "Data kehadiran berhasil didapatkan",
+				"data" => $attendances,
+			]);
+		} catch (\Throwable $e) {
+			Log::error("Error", [$e]);
+
+			return response()->json(
+				[
+					"message" => "Terjadi kesalahan saat mengambil data presensi.",
 					"error" => app()->environment("local") ? $e->getMessage() : null,
 				],
 				500

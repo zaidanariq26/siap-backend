@@ -25,6 +25,7 @@ class UpdateJournalRequest extends FormRequest
 			"date" => "required|date",
 			"description" => "required|string",
 			"is_new_image" => "required|boolean",
+			"captured_at" => "required",
 			"image_path" => "nullable",
 		];
 

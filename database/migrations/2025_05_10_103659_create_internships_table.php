@@ -11,22 +11,21 @@ return new class extends Migration {
 	public function up(): void
 	{
 		Schema::create("internships", function (Blueprint $table) {
-			$table->bigIncrements("id_internship");
+			$table->ulid("id_internship")->primary();
 
 			$table->unsignedBigInteger("student_id");
 			$table->foreign("student_id")->references("id_user")->on("users")->onDelete("cascade")->onUpdate("cascade");
 
-			$table->unsignedBigInteger("teacher_id");
-			$table->foreign("teacher_id")->references("id_user")->on("users")->onDelete("cascade")->onUpdate("cascade");
+			$table->unsignedBigInteger("teacher_id")->nullable();
+			$table->foreign("teacher_id")->references("id_user")->on("users")->onDelete("set null")->onUpdate("cascade");
 
 			$table->string("job_name");
 			$table->string("company_name");
 			$table->string("instructor_name");
 			$table->string("instructor_contact");
-			$table->string("teacher_name");
 			$table->string("teacher_contact");
 			$table->date("start_date");
-			$table->date("end_date")->nullable();
+			$table->date("end_date");
 			$table->enum("status", ["pending", "ongoing", "completed"])->default("pending");
 			$table->timestamps();
 		});

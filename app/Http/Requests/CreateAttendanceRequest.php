@@ -21,13 +21,21 @@ class CreateAttendanceRequest extends FormRequest
 	 */
 	public function rules(): array
 	{
-		return [
+		$rules = [
 			"status" => "required|in:present,excused,sick",
 			"latitude" => "required|numeric|between:-90,90",
 			"longitude" => "required|numeric|between:-180,180",
+			"accuracy" => "required",
 			"date" => "nullable",
 			"note" => "nullable|string",
+			"attachment" => "nullable",
 		];
+
+		if ($this->input("status") === "sick") {
+			$rules["attachment"] = "required|image|mimes:jpeg,png,jpg|max:20480";
+		}
+
+		return $rules;
 	}
 
 	public function messages()
@@ -40,11 +48,18 @@ class CreateAttendanceRequest extends FormRequest
 			"latitude.numeric" => "Latitude harus berupa angka.",
 			"latitude.between" => "Latitude harus berada antara -90 hingga 90.",
 
+			"accuracy.required" => "Data akurasi tidak tersedia",
+
 			"longitude.required" => "Longitude tidak tersedia.",
 			"longitude.numeric" => "Longitude harus berupa angka.",
 			"longitude.between" => "Longitude harus berada antara -180 hingga 180.",
 
 			"note.string" => "Catatan harus berupa teks.",
+
+			"attachment.required_if" => "Lampiran wajib diunggah jika status presensi adalah sakit.",
+			"attachment.image" => "Lampiran harus berupa gambar.",
+			"attachment.mimes" => "Lampiran harus berupa file dengan format: jpeg, jpg, atau png.",
+			"attachment.max" => "Ukuran lampiran tidak boleh lebih dari 20MB.",
 		];
 	}
 }

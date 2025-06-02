@@ -16,6 +16,7 @@ class UserSeeder extends Seeder
 		// Teacher
 		User::create([
 			"name" => "Musa Ali",
+			"slug" => "musa-ali",
 			"email" => "kepsek@gmail.com",
 			"password" => bcrypt("password"),
 			"email_verified_at" => now(),
@@ -23,58 +24,20 @@ class UserSeeder extends Seeder
 		]);
 		User::create([
 			"name" => "Amir Nur",
+			"slug" => "amir-nur",
 			"email" => "kpk@gmail.com",
 			"password" => bcrypt("password"),
 			"email_verified_at" => now(),
 			"role" => "kepala_program",
 		]);
-		User::create([
-			"name" => "Nila Citra",
-			"email" => "walas@gmail.com",
-			"password" => bcrypt("password"),
-			"role" => "wali_kelas",
 
-			"email_verified_at" => now(),
-		]);
 		User::create([
 			"name" => "Afifah Irfan",
+			"slug" => "afifah-irfan",
 			"email" => "gupem@gmail.com",
 			"password" => bcrypt("password"),
 			"email_verified_at" => now(),
 			"role" => "guru_pembimbing",
 		]);
-
-		// Student
-		User::create([
-			"name" => "Halimah Adnan",
-			"email" => "halimah_adnan@gmail.com",
-			"password" => bcrypt("password"),
-			"email_verified_at" => now(),
-			"role" => "peserta_didik",
-		]);
-		// User::create([
-		// 	"name" => "Ahmad Fikri",
-		// 	"email" => "ahmad_fikri@gmail.com",
-		// 	"password" => bcrypt("password"),
-		// 	"email_verified_at" => now(),
-		// ]);
-		// User::create([
-		// 	"name" => "Muhammad Fatimah",
-		// 	"email" => "muhammad_fatimah@gmail.com",
-		// 	"password" => bcrypt("password"),
-		// 	"email_verified_at" => now(),
-		// ]);
-		// User::create([
-		// 	"name" => "Wahyu Cahya",
-		// 	"email" => "wahyu_cahya@gmail.com",
-		// 	"password" => bcrypt("password"),
-		// 	"email_verified_at" => now(),
-		// ]);
-		// User::create([
-		// 	"name" => "Ahmad Arif",
-		// 	"email" => "ahmad_arif@gmail.com",
-		// 	"password" => bcrypt("password"),
-		// 	"email_verified_at" => now(),
-		// ]);
 	}
 }

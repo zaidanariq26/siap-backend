@@ -13,19 +13,6 @@ class DatabaseSeeder extends Seeder
 	 */
 	public function run(): void
 	{
-		$this->call([UserSeeder::class, TeacherSeeder::class, StudentSeeder::class]);
+		$this->call([UserSeeder::class, TeacherSeeder::class, StudentSeeder::class, MajorSeeder::class]);
 	}
-
-	// CREATE TABLE data_students (
-	// id INT AUTO_INCREMENT PRIMARY KEY,
-	// name VARCHAR(100),
-	// npsn VARCHAR(20),
-	// gender ENUM('L', 'P'), -- L untuk laki-laki, P untuk perempuan
-	// nisn VARCHAR(20),
-	// birthplace VARCHAR(100),
-	// birthdate DATE,
-	// class VARCHAR(50),
-	// password VARCHAR(255),
-	// email VARCHAR(100)
-	// );
 }

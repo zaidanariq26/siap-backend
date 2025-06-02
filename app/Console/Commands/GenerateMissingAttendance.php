@@ -57,7 +57,9 @@ class GenerateMissingAttendance extends Command
 				if (!$alreadyAttended) {
 					$attendanceData = [
 						"student_id" => $studentId,
+						"teacher_id" => $internship->teacher_id,
 						"internship_id" => $internship->id_internship,
+
 						"date" => $today,
 						"status" => $status,
 					];
@@ -71,6 +73,7 @@ class GenerateMissingAttendance extends Command
 					if ($attendance->status !== "off") {
 						Journal::create([
 							"student_id" => $attendance->student_id,
+							"teacher_id" => $attendance->teacher_id,
 							"internship_id" => $attendance->internship_id,
 							"attendance_id" => $attendance->id_attendance,
 							"status" => "not_present",

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StudentRegisterRequest extends FormRequest
+class TeacherRegisterRequest extends FormRequest
 {
 	/**
 	 * Determine if the user is authorized to make this request.
@@ -22,7 +22,6 @@ class StudentRegisterRequest extends FormRequest
 	public function rules(): array
 	{
 		return [
-			"nisn" => "nullable|string|digits:10",
 			"email" => "required|email|unique:users,email",
 			"password" => "required|confirmed|string|min:8",
 			"firstname" => "required|string",
@@ -32,15 +31,9 @@ class StudentRegisterRequest extends FormRequest
 		];
 	}
 
-	public function messages(): array
+	public function messages()
 	{
 		return [
-			// NISN
-			"nisn.required" => "Kolom NISN wajib diisi.",
-			"nisn.string" => "NISN harus berupa teks.",
-			"nisn.digits" => "NISN harus terdiri dari 10 angka.",
-			"nisn.exists" => "NISN yang Anda masukkan tidak ditemukan dalam data siswa.",
-
 			// Email
 			"email.required" => "Kolom email wajib diisi.",
 			"email.email" => "Format email tidak valid.",

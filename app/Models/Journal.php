@@ -26,6 +26,16 @@ class Journal extends Model
 	}
 
 	/**
+	 * Get the user record who is the supervised teacher associated with this journal
+	 *
+	 * @return BelongsTo
+	 */
+	public function teacher(): BelongsTo
+	{
+		return $this->belongsTo(User::class, "teacher_id", "id_user");
+	}
+
+	/**
 	 * Get attendance record that associated with journal
 	 *
 	 * @return BelongsTo

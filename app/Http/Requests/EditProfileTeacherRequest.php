@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class EditProfileStudentRequest extends FormRequest
+class EditProfileTeacherRequest extends FormRequest
 {
 	/**
 	 * Determine if the user is authorized to make this request.
 	 */
 	public function authorize(): bool
 	{
-		return auth()->user()->role === "peserta_didik";
+		return auth()->user()->role !== "peserta_didik";
 	}
 
 	/**
@@ -28,16 +28,12 @@ class EditProfileStudentRequest extends FormRequest
 			"lastname" => "nullable|string|max:255",
 			"email" => "required|email|unique:users,email,{$userId},id_user",
 			"school" => "required|string|max:255",
-			"nisn" => "required|digits:10",
-			"homeroom_teacher_id" => "required|integer|exists:users,id_user",
-			"major_id" => "required|integer|exists:majors,id_major",
+			"nip" => "required|string|regex:/^[0-9]+$/",
 			"birthplace" => "required|string|max:255",
 			"birthdate" => "required|date|before:today",
 			"contact" => "required|string|regex:/^[0-9]+$/|min:5|max:15",
 			"religion" => "required|string|in:islam,protestan,katolik,hindu,buddha,konghucu",
 			"gender" => "required|string|in:male,female",
-			"emergency_contact" => "required|string|regex:/^[0-9]+$/|min:5|max:15",
-			"emergency_contact_name" => "required|string|max:255",
 		];
 	}
 
@@ -52,14 +48,9 @@ class EditProfileStudentRequest extends FormRequest
 			"email.email" => "Format email tidak valid.",
 			"email.unique" => "Email sudah digunakan.",
 
-			"nisn.required" => "NISN wajib diisi.",
-			"nisn.digits" => "NISN harus terdiri dari 10 angka.",
-
-			"major.required" => "Program keahlian wajib dipilih.",
-			"major.exists" => "Program keahlian tidak valid.",
-
-			"homeroom_teacher_id.required" => "Wali kelas wajib dipilih.",
-			"homeroom_teacher_id.exists" => "Wali kelas tidak valid.",
+			"nip.required" => "NIP wajib diisi.",
+			"nip.string" => "NIP harus berupa teks.",
+			"nip.regex" => "NIP hanya boleh berisi angka.",
 
 			"birthplace.required" => "Tempat lahir wajib diisi.",
 			"birthdate.required" => "Tanggal lahir wajib diisi.",
@@ -76,14 +67,6 @@ class EditProfileStudentRequest extends FormRequest
 
 			"gender.required" => "Jenis kelamin wajib dipilih.",
 			"gender.in" => "Jenis kelamin tidak valid.",
-
-			"emergency_contact.required" => "Kontak darurat wajib diisi.",
-			"emergency_contact.string" => "Kontak darurat harus berupa teks.",
-			"emergency_contact.regex" => "Kontak darurat hanya boleh berisi angka.",
-			"emergency_contact.min" => "Kontak darurat minimal terdiri dari 5 digit.",
-			"emergency_contact.max" => "Kontak darurat tidak boleh lebih dari 15 digit.",
-
-			"emergency_contact_name.required" => "Nama kontak darurat wajib diisi.",
 		];
 	}
 }

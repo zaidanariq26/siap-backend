@@ -11,10 +11,9 @@ class TeacherController extends Controller
 	{
 		try {
 			$homerooms = User::where("role", "wali_kelas")->get();
-			$homerooms->makeHidden(["email_verified_at", "created_at", "updated_at"]);
 			return response()->json(
 				[
-					"code" => 200,
+					"message" => "Data wali kelas berhasil didapatkan.",
 					"data" => $homerooms,
 				],
 				200
@@ -22,7 +21,6 @@ class TeacherController extends Controller
 		} catch (\Exception $e) {
 			return response()->json(
 				[
-					"code" => 500,
 					"message" => "Gagal memuat data. Silakan refresh halaman dan coba lagi.",
 					"error" => $e->getMessage(),
 				],
@@ -34,7 +32,8 @@ class TeacherController extends Controller
 	public function getAllTeachers()
 	{
 		try {
-			$teachers = User::whereNot("role", "peserta_didik")->select("id_user", "name", "email", "role")->get();
+			$teachers = User::whereNot("role", "peserta_didik")->get();
+
 			return response()->json(
 				[
 					"message" => "Data guru pembimbing berhasil didapatkan.",

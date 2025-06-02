@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -22,7 +23,7 @@ class User extends Authenticatable
 	 *
 	 * @var list<string>
 	 */
-	protected $fillable = ["name", "email", "password", "email_verified_at", "role"];
+	protected $fillable = ["name", "slug", "email", "password", "email_verified_at", "role"];
 
 	/**
 	 * The attributes that should be hidden for serialization.
@@ -112,5 +113,25 @@ class User extends Authenticatable
 	public function journals(): HasMany
 	{
 		return $this->hasMany(Journal::class, "student_id", "id_user");
+	}
+
+	/**
+	 * Get all attendance records associated with this user as a supervised teacher.
+	 *
+	 * @return HasMany
+	 */
+	public function studentAttendances(): HasMany
+	{
+		return $this->hasMany(Attendance::class, "teacher_id", "id_user");
+	}
+
+	/**
+	 * Get all journal records associated with this user as a supervised teacher.
+	 *
+	 * @return HasMany
+	 */
+	public function studentJournals(): HasMany
+	{
+		return $this->hasMany(Journal::class, "teacher_id", "id_user");
 	}
 }

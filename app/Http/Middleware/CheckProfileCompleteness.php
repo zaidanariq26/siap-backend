@@ -24,7 +24,7 @@ class CheckProfileCompleteness
 			$requiredFields = [
 				"npsn",
 				"school",
-				"major",
+				"major_id",
 				"homeroom_teacher_id",
 				"birthplace",
 				"birthdate",

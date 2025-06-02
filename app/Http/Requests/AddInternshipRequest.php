@@ -27,19 +27,17 @@ class AddInternshipRequest extends FormRequest
 			"company_name" => "required|string|max:255",
 			"instructor_name" => "required|string|max:255",
 			"instructor_contact" => "required|string|regex:/^[0-9]+$/|min:5|max:15",
-			"teacher_name" => "required|string|max:255",
 			"teacher_contact" => "required|string|regex:/^[0-9]+$/|min:5|max:15",
 			"start_date" => "required|date|after_or_equal:today",
-			"end_date" => "required_if:still_internship,false|nullable|date|after:start_date",
-			"still_internship" => "required|boolean",
+			"end_date" => "required|date|after:start_date",
 		];
 	}
 
 	public function messages()
 	{
 		return [
-			"teacher_id.required" => "ID guru pembimbing wajib diisi.",
-			"teacher_id.exists" => "ID guru pembimbing yang dimasukkan tidak valid.",
+			"teacher_id.required" => "Kolom guru pembimbing wajib diisi.",
+			"teacher_id.exists" => "Guru pembimbing yang dimasukkan tidak tersedia.",
 
 			"job_name.required" => "Nama pekerjaan wajib diisi.",
 			"job_name.string" => "Nama pekerjaan harus berupa teks.",
@@ -59,10 +57,6 @@ class AddInternshipRequest extends FormRequest
 			"instructor_contact.min" => "Kontak guru pembimbing minimal terdiri dari 5 digit.",
 			"instructor_contact.max" => "Kontak guru pembimbing tidak boleh lebih dari 15 digit.",
 
-			"teacher_name.required" => "Nama guru pembimbing wajib diisi.",
-			"teacher_name.string" => "Nama guru pembimbing harus berupa teks.",
-			"teacher_name.max" => "Nama guru pembimbing tidak boleh lebih dari 255 karakter.",
-
 			"teacher_contact.required" => "Kontak guru pembimbing wajib diisi.",
 			"teacher_contact.string" => "Kontak guru pembimbing harus berupa teks.",
 			"teacher_contact.regex" => "Kontak guru pembimbing hanya boleh berisi angka.",
@@ -75,7 +69,7 @@ class AddInternshipRequest extends FormRequest
 
 			"end_date.date" => "Tanggal selesai harus berupa tanggal yang valid.",
 			"end_date.after" => "Tanggal selesai harus setelah tanggal mulai.",
-			"end_date.required_if" => "Tanggal selesai wajib diisi.",
+			"end_date.required" => "Tanggal selesai wajib diisi.",
 		];
 	}
 }

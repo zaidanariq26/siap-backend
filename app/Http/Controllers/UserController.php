@@ -11,26 +11,20 @@ class UserController extends Controller
 	public function authUser()
 	{
 		try {
-			$userId = Auth::id();
+			$user = Auth::user()->loadMissing("teacher");
 
-			if (!$userId) {
-				return response()->json(
-					[
-						"message" => "Pengguna belum login atau sesi telah berakhir.",
-					],
-					401
-				);
-			}
+			$user = Cache::remember("auth_user_{$user->id_user}", now()->addHours(2), function () use ($user) {
+				if ($user->role === "peserta_didik") {
+					return $user->loadMissing(["student", "student.homeroomTeacher", "student.majorDetail"]);
+				}
 
-			$user = Cache::store("database")->remember("auth_user_{$userId}", now()->addMinutes(120), function () use ($userId) {
-				$user = Auth::user()->loadMissing(["student", "student.homeroomTeacher:id_user,name,email,role"]);
-				$user->student->makeHidden(["created_at", "updated_at"]);
-				$user->makeHidden(["email_verified_at", "created_at", "updated_at"]);
-
-				return $user;
+				return $user->loadMissing(["teacher", "teacher.majorDetail"]);
 			});
 
-			return response()->json(["data" => $user]);
+			return response()->json([
+				"data" => $user,
+				"message" => "Data pengguna berhasil didapatkan.",
+			]);
 		} catch (\Throwable $e) {
 			return response()->json(
 				[
@@ -47,7 +41,7 @@ class UserController extends Controller
 		try {
 			$user = Auth::user();
 
-			Cache::forget("auth_user_{$user->id}");
+			Cache::forget("auth_user_{$user->id_user}");
 			Auth::guard("web")->logout();
 			$request->session()->invalidate();
 			$request->session()->regenerateToken();

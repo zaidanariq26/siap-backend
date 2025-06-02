@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Teacher extends Model
 {
 	protected $guarded = ["id_teacher"];
-
 	protected $primaryKey = "id_teacher";
 
 	/**
@@ -19,5 +18,14 @@ class Teacher extends Model
 	public function user(): BelongsTo
 	{
 		return $this->belongsTo(User::class, "user_id");
+	}
+
+	/**
+	 * Get the major detail as a Teacher.
+	 *
+	 */
+	public function majorDetail(): BelongsTo
+	{
+		return $this->belongsTo(Major::class, "major_id");
 	}
 }

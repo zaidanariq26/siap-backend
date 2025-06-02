@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\SlugHelper;
 use App\Http\Requests\StudentRegisterRequest;
+use App\Http\Requests\TeacherRegisterRequest;
 use App\Jobs\SendResetPasswordMail;
 use App\Mail\ResetPasswordMail;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Student;
+use App\Models\Teacher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -33,9 +36,12 @@ class AuthController extends Controller
 				$fullName .= " " . $validatedData["lastname"];
 			}
 
+			$slug = SlugHelper::generateUniqueSlug(User::class, $fullName);
+
 			$user = User::create([
 				"name" => $fullName,
 				"email" => $validatedData["email"],
+				"slug" => $slug,
 				"password" => Hash::make($validatedData["password"]),
 				"email_verified_at" => now(),
 				"role" => "peserta_didik",
@@ -59,10 +65,9 @@ class AuthController extends Controller
 			DB::commit();
 
 			Auth::login($user);
-			$userId = Auth::id();
 
-			$user = Cache::store("database")->remember("auth_user_{$userId}", now()->addMinutes(120), function () use ($userId) {
-				$user = Auth::user()->loadMissing(["student", "student.homeroomTeacher"]);
+			$user = Cache::store("database")->remember("auth_user_{$user->id_user}", now()->addMinutes(120), function () use ($user) {
+				$user = $user->loadMissing(["student", "student.homeroomTeacher", "student.majorDetail"]);
 				return $user;
 			});
 
@@ -79,7 +84,68 @@ class AuthController extends Controller
 		}
 	}
 
-	public function loginStudent(Request $request)
+	public function registerTeacher(TeacherRegisterRequest $request)
+	{
+		$validatedData = $request->validated();
+
+		try {
+			DB::beginTransaction();
+
+			$fullName = $validatedData["firstname"];
+
+			if (!empty($validatedData["lastname"])) {
+				$fullName .= " " . $validatedData["lastname"];
+			}
+
+			$slug = SlugHelper::generateUniqueSlug(User::class, $fullName);
+
+			$user = User::create([
+				"name" => $fullName,
+				"email" => $validatedData["email"],
+				"slug" => $slug,
+				"password" => Hash::make($validatedData["password"]),
+				"email_verified_at" => now(),
+				"role" => "guru_pembimbing",
+			]);
+
+			$firstInitial = strtoupper(substr($validatedData["firstname"], 0, 1));
+			$lastInitial = !empty($validatedData["lastname"]) ? strtoupper(substr($validatedData["lastname"], 0, 1)) : "";
+			$initials = $firstInitial . $lastInitial;
+			$avatarUrl = "https://api.dicebear.com/9.x/initials/svg?seed=" . urlencode($initials);
+
+			Teacher::create([
+				"user_id" => $user->id_user,
+				"firstname" => $validatedData["firstname"],
+				"lastname" => $validatedData["lastname"] ?? "",
+				"npsn" => $validatedData["npsn"],
+				"avatar" => $avatarUrl,
+				"school" => $validatedData["school"],
+			]);
+
+			DB::commit();
+
+			Auth::login($user);
+
+			$user = Cache::store("database")->remember("auth_user_{$user->id_user}", now()->addMinutes(120), function () use ($user) {
+				$user = $user->loadMissing(["teacher", "teacher.majorDetail"]);
+				return $user;
+			});
+
+			return response()->json(["message" => "Registrasi berhasil", "data" => $user], 201);
+		} catch (\Exception $e) {
+			DB::rollBack();
+			Log::error($e);
+			return response()->json(
+				[
+					"message" => "Terjadi kesalahan saat register. Silahkan coba lagi!",
+					"error" => app()->environment("local") ? $e->getMessage() : null,
+				],
+				500
+			);
+		}
+	}
+
+	public function login(Request $request)
 	{
 		$credentials = $request->validate(
 			[
@@ -96,21 +162,22 @@ class AuthController extends Controller
 		try {
 			if (Auth::attempt($credentials)) {
 				$request->session()->regenerate();
-				$userId = Auth::id();
+				$user = Auth::user();
 
-				Cache::forget("auth_user_{$userId}");
-				$user = Cache::remember("auth_user_{$userId}", now()->addHours(2), function () use ($userId) {
-					$user = Auth::user()->loadMissing(["student", "student.homeroomTeacher"]);
-					return $user;
+				Cache::forget("auth_user_{$user->id_user}");
+
+				$dataUser = Cache::remember("auth_user_{$user->id_user}", now()->addHours(2), function () use ($user) {
+					if ($user->role == "peserta_didik") {
+						return $user->loadMissing(["student", "student.homeroomTeacher", "student.majorDetail"]);
+					}
+
+					return $user->loadMissing(["teacher", "teacher.majorDetail"]);
 				});
 
-				return response()->json(
-					[
-						"message" => "Login berhasil!",
-						"data" => $user,
-					],
-					200
-				);
+				return response()->json([
+					"message" => "Login berhasil!",
+					"data" => $dataUser,
+				]);
 			}
 			return response()->json(
 				[
@@ -119,6 +186,7 @@ class AuthController extends Controller
 				401
 			);
 		} catch (\Throwable $e) {
+			Log::error($e);
 			return response()->json(
 				[
 					"code" => 500,
@@ -156,7 +224,9 @@ class AuthController extends Controller
 				"created_at" => Carbon::now(),
 			]);
 
-			$resetLink = env("FRONTEND_URL") . "/reset-password?token={$resetToken}&email=" . urlencode($user->email);
+			$prefixRole = $user->role !== "peserta_didik" ? "/guru" : "";
+
+			$resetLink = env("FRONTEND_URL") . "{$prefixRole}/reset-password?token={$resetToken}&email=" . urlencode($user->email);
 
 			Log::info("tes", [
 				"resetToken" => $resetToken,

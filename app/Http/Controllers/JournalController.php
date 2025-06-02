@@ -26,6 +26,14 @@ class JournalController extends Controller
 				->orderBy("created_at", "desc")
 				->get();
 
+			$journals->loadMissing([
+				"attendance",
+				"attendance.student",
+				"attendance.student.student",
+				"attendance.student.student.homeroomTeacher",
+				"attendance.student.student.majorDetail",
+			]);
+
 			return response()->json([
 				"message" => "Data jurnal berhasil didapatkan",
 				"data" => $journals,
@@ -75,6 +83,7 @@ class JournalController extends Controller
 
 			$journal->update([
 				"date" => $validatedData["date"],
+				"captured_at" => $validatedData["captured_at"],
 				"description" => $validatedData["description"],
 				"image_path" => $validatedData["image_path"] ?? $journal->image_path,
 				"status" => "in_review",
@@ -84,7 +93,7 @@ class JournalController extends Controller
 			DB::commit();
 
 			return response()->json([
-				"message" => "Data jurnal berhasil didapatkan",
+				"message" => "Data Jurnal Berhasil Didapatkan",
 				"data" => $journal,
 			]);
 		} catch (\Exception $e) {

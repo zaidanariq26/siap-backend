@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Student extends Model
 {
 	protected $guarded = ["id_student"];
-
 	protected $primaryKey = "id_student";
 
 	/**
@@ -27,5 +26,14 @@ class Student extends Model
 	public function homeroomTeacher(): BelongsTo
 	{
 		return $this->belongsTo(User::class, "homeroom_teacher_id");
+	}
+
+	/**
+	 * Get the major detail as a Student.
+	 *
+	 */
+	public function majorDetail(): BelongsTo
+	{
+		return $this->belongsTo(Major::class, "major_id");
 	}
 }
