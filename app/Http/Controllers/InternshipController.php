@@ -237,6 +237,8 @@ class InternshipController extends Controller
 					->get();
 			} elseif ($user->role === "manajemen_sekolah") {
 				$internships = Internship::where("status", "ongoing")->get();
+			} else {
+				$internships = Internship::where("status", "ongoing")->where("teacher_id", $user->id_user)->get();
 			}
 
 			$internships->loadMissing([

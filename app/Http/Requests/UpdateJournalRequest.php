@@ -30,7 +30,7 @@ class UpdateJournalRequest extends FormRequest
 		];
 
 		if ($this->input("is_new_image")) {
-			$rules["image_path"] = "required|image|mimes:jpeg,png,jpg|max:20480";
+			$rules["image_path"] = "required|image|mimes:jpeg,png,jpg|max:1024";
 		}
 
 		return $rules;

@@ -29,7 +29,7 @@ return new class extends Migration {
 			$table->string("attachment")->nullable();
 			$table->decimal("latitude", 10, 8)->nullable();
 			$table->decimal("longitude", 11, 8)->nullable();
-			$table->decimal("accuracy", 8, 3)->nullable();
+			$table->unsignedBigInteger("accuracy")->nullable();
 			$table->timestamp("expired_at")->nullable();
 			$table->timestamps();
 		});

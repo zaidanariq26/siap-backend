@@ -28,12 +28,8 @@ class CreateAttendanceRequest extends FormRequest
 			"accuracy" => "required",
 			"date" => "nullable",
 			"note" => "nullable|string",
-			"attachment" => "nullable",
+			"attachment" => "nullable|file|mimes:jpeg,png,jpg|max:1024",
 		];
-
-		if ($this->input("status") === "sick") {
-			$rules["attachment"] = "required|image|mimes:jpeg,png,jpg|max:20480";
-		}
 
 		return $rules;
 	}
@@ -56,10 +52,9 @@ class CreateAttendanceRequest extends FormRequest
 
 			"note.string" => "Catatan harus berupa teks.",
 
-			"attachment.required_if" => "Lampiran wajib diunggah jika status presensi adalah sakit.",
-			"attachment.image" => "Lampiran harus berupa gambar.",
+			"attachment.file" => "Lampiran harus berupa file.",
 			"attachment.mimes" => "Lampiran harus berupa file dengan format: jpeg, jpg, atau png.",
-			"attachment.max" => "Ukuran lampiran tidak boleh lebih dari 20MB.",
+			"attachment.max" => "Ukuran lampiran tidak boleh lebih dari 1MB.",
 		];
 	}
 }
