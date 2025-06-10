@@ -107,4 +107,55 @@ class JournalController extends Controller
 			);
 		}
 	}
+
+	public function reviewJournal(Request $request, Journal $journal)
+	{
+		$validatedData = $request->validate(
+			[
+				"status" => "required|string|in:approved,needs_revision",
+			],
+			[
+				"status.required" => "Anda belum melakukan peninjauan.",
+				"status.in" => "Status tidak valid.",
+			]
+		);
+
+		try {
+			$user = Auth::user();
+
+			if ($journal->teacher_id !== $user->id_user) {
+				return response()->json(["status" => "review_rejected", "message" => "Anda tidak memiliki akses untuk meninjau jurnal ini."], 403);
+			}
+
+			DB::beginTransaction();
+
+			$journal->update([
+				"status" => $validatedData["status"],
+			]);
+
+			$journal = $journal->fresh(with: "attendance");
+			DB::commit();
+
+			$message = "";
+			if ($journal->status == "approved") {
+				$message = "Jurnal Aktivitas Berhasil Disetujui";
+			} elseif ($journal->status == "needs_revision") {
+				$message = "Jurnal Aktivitas Berhasil Ditolak";
+			}
+
+			return response()->json([
+				"message" => $message,
+				"data" => $journal,
+			]);
+		} catch (\Exception $e) {
+			DB::rollBack();
+			return response()->json(
+				[
+					"message" => "Terjadi kesalahan saat memperbarui jurnal. Silahkan coba lagi!",
+					"error" => app()->environment("local") ? $e->getMessage() : null,
+				],
+				500
+			);
+		}
+	}
 }

@@ -27,4 +27,13 @@ class Major extends Model
 	{
 		return $this->hasMany(Teacher::class, "major_id", "id_major");
 	}
+
+	/**
+	 * Get the instrument records that connected with the major
+	 *
+	 */
+	public function instrument()
+	{
+		return $this->hasOne(Instrument::class, "major_id", "id_major");
+	}
 }

@@ -36,5 +36,28 @@ class TeacherSeeder extends Seeder
 			"religion" => "islam",
 			"gender" => "female",
 		]);
+
+		$kpk = User::create([
+			"name" => "Amir Nur",
+			"slug" => "amir-nur",
+			"email" => "kpk@gmail.com",
+			"password" => bcrypt("password"),
+			"email_verified_at" => now(),
+			"role" => "kepala_program",
+		]);
+
+		Teacher::create([
+			"user_id" => $kpk->id_user,
+			"firstname" => "Amir",
+			"lastname" => "Nur",
+			"nip" => 1111113123,
+			"school" => "SMKN 16 Jakarta",
+			"birthplace" => "jakarta",
+			"birthdate" => Carbon::parse("1990-05-10"),
+			"contact" => "08282882882",
+			"religion" => "islam",
+			"gender" => "male",
+			"major_id" => 1,
+		]);
 	}
 }

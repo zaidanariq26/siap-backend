@@ -22,14 +22,6 @@ class UserSeeder extends Seeder
 			"email_verified_at" => now(),
 			"role" => "manajemen_sekolah",
 		]);
-		User::create([
-			"name" => "Amir Nur",
-			"slug" => "amir-nur",
-			"email" => "kpk@gmail.com",
-			"password" => bcrypt("password"),
-			"email_verified_at" => now(),
-			"role" => "kepala_program",
-		]);
 
 		User::create([
 			"name" => "Afifah Irfan",

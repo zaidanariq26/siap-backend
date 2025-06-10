@@ -134,4 +134,14 @@ class User extends Authenticatable
 	{
 		return $this->hasMany(Journal::class, "teacher_id", "id_user");
 	}
+
+	/**
+	 * Get instruments records associated with this user as a head of department.
+	 *
+	 * @return HasOne
+	 */
+	public function instrument(): HasOne
+	{
+		return $this->hasOne(Instrument::class, "teacher_id", "id_user");
+	}
 }

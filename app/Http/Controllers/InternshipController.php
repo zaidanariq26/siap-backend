@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Journal;
 use Carbon\Carbon;
 use App\Models\Internship;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\AddInternshipRequest;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Request;
 
 class InternshipController extends Controller
 {

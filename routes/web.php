@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\InstrumentController;
 use App\Http\Controllers\InternshipController;
 use App\Http\Controllers\JournalController;
 use App\Http\Controllers\MajorController;
@@ -37,6 +38,9 @@ Route::middleware("auth")->group(function () {
 	Route::put("/internships/{internship}/update", [InternshipController::class, "updateStudentInternship"])->middleware(["checkRole:peserta_didik", "checkProfile"]);
 	Route::put("/internships/{internship}/set-completed", [InternshipController::class, "setInternshipCompleted"])->middleware(["checkRole:peserta_didik", "checkProfile"]);
 
+	Route::put("/internships/journals/{journal}/review", [JournalController::class, "reviewJournal"])->middleware(
+		"checkRole:guru_pembimbing,wali_kelas,kepala_program,manajemen_sekolah"
+	);
 	Route::get("/internships/students", [InternshipController::class, "getStudentsByRole"])->middleware("checkRole:guru_pembimbing,wali_kelas,kepala_program,manajemen_sekolah");
 
 	// Handle Attendance
@@ -50,6 +54,11 @@ Route::middleware("auth")->group(function () {
 	// Handle Journal
 	Route::get("/journals", [JournalController::class, "getAllJournals"])->middleware(["checkRole:peserta_didik"]);
 	Route::put("/journals/{journal}/update", [JournalController::class, "updateJournalById"])->middleware(["checkRole:peserta_didik", "checkProfile"]);
+
+	// Handle Instrument
+	Route::get("/instruments", [InstrumentController::class, "getInstrument"])->middleware("checkRole:guru_pembimbing,wali_kelas,kepala_program,manajemen_sekolah");
+	Route::post("/instruments/create", [InstrumentController::class, "createInstrument"])->middleware(["checkRole:kepala_program"]);
+	Route::put("/instruments/set-status", [InstrumentController::class, "setInstrumentStatus"])->middleware(["checkRole:kepala_program"]);
 });
 
 require __DIR__ . "/auth.php";
