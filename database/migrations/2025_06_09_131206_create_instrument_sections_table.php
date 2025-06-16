@@ -13,7 +13,7 @@ return new class extends Migration {
 		Schema::create("instrument_sections", function (Blueprint $table) {
 			$table->bigIncrements("id_instrument_section");
 
-			$table->unsignedBigInteger("instrument_id");
+			$table->char("instrument_id", 26);
 			$table->foreign("instrument_id")->references("id_instrument")->on("instruments")->onDelete("cascade")->onUpdate("cascade");
 
 			$table->string("section_code");

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AssesmentController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\InstrumentController;
 use App\Http\Controllers\InternshipController;
@@ -28,6 +29,15 @@ Route::middleware("auth")->group(function () {
 	// Handle User
 	Route::get("/user", [UserController::class, "authUser"]);
 	Route::delete("/user/delete", [UserController::class, "deleteUser"]);
+
+	Route::get("/users", [UserController::class, "getAllUsers"]);
+	Route::delete("/users/{user}/delete", [UserController::class, "deleteUserById"]);
+	Route::delete("/users/delete", [UserController::class, "deleteSelectedUsers"]);
+
+	Route::put("/users/{user}/remove-homeroom", [UserController::class, "removeFromHomeroom"]);
+	Route::put("/users/{user}/promote-homeroom", [UserController::class, "promoteToHomeroom"]);
+	Route::put("/users/{user}/promote-major-leader", [UserController::class, "promoteToMajorLeader"]);
+	Route::put("/users/{user}/promote-management", [UserController::class, "promoteToManagement"]);
 
 	// Handle Major
 	Route::get("/majors", [MajorController::class, "getAllMajors"]);
@@ -59,6 +69,12 @@ Route::middleware("auth")->group(function () {
 	Route::get("/instruments", [InstrumentController::class, "getInstrument"])->middleware("checkRole:guru_pembimbing,wali_kelas,kepala_program,manajemen_sekolah");
 	Route::post("/instruments/create", [InstrumentController::class, "createInstrument"])->middleware(["checkRole:kepala_program"]);
 	Route::put("/instruments/set-status", [InstrumentController::class, "setInstrumentStatus"])->middleware(["checkRole:kepala_program"]);
+	Route::put("/instruments/{instrument}/update", [InstrumentController::class, "updateInstrument"])->middleware(["checkRole:kepala_program"]);
+
+	// Handle Assesment
+	Route::put("/assesments/{assesment}/update", [AssesmentController::class, "updateAssesment"])->middleware(
+		"checkRole:guru_pembimbing,wali_kelas,kepala_program,manajemen_sekolah"
+	);
 });
 
 require __DIR__ . "/auth.php";

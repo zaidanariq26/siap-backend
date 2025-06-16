@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Assesment;
 use App\Models\Journal;
 use Carbon\Carbon;
 use App\Models\Internship;
@@ -50,6 +51,21 @@ class InternshipController extends Controller
 			}
 
 			$internship = Internship::create($validatedData);
+
+			for ($i = 1; $i <= 6; $i++) {
+				Assesment::create([
+					"internship_id" => $internship->id_internship,
+					"name" => "Asesmen Bulan Ke-$i",
+					"status" => "needs_assesment",
+				]);
+			}
+
+			Assesment::create([
+				"internship_id" => $internship->id_internship,
+				"name" => "Final Asesmen",
+				"status" => "needs_final_assesment",
+			]);
+
 			$internship->loadMissing(["student", "teacher"]);
 
 			DB::commit();
@@ -255,6 +271,7 @@ class InternshipController extends Controller
 				"attendances.student.student.majorDetail",
 				"journals",
 				"journals.attendance",
+				"assesments",
 			]);
 
 			Log::info("Data", [$internships]);

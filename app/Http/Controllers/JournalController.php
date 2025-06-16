@@ -89,7 +89,14 @@ class JournalController extends Controller
 				"status" => "in_review",
 			]);
 
-			$journal = $journal->fresh("attendance");
+			$journal = $journal->fresh([
+				"attendance",
+				"attendance.student",
+				"attendance.student.student",
+				"attendance.student.student.homeroomTeacher",
+				"attendance.student.student.majorDetail",
+			]);
+
 			DB::commit();
 
 			return response()->json([
@@ -113,6 +120,7 @@ class JournalController extends Controller
 		$validatedData = $request->validate(
 			[
 				"status" => "required|string|in:approved,needs_revision",
+				"feedback" => "nullable|string",
 			],
 			[
 				"status.required" => "Anda belum melakukan peninjauan.",
@@ -131,6 +139,7 @@ class JournalController extends Controller
 
 			$journal->update([
 				"status" => $validatedData["status"],
+				"feedback" => $validatedData["feedback"],
 			]);
 
 			$journal = $journal->fresh(with: "attendance");

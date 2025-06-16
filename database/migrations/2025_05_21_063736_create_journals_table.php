@@ -11,7 +11,7 @@ return new class extends Migration {
 	public function up(): void
 	{
 		Schema::create("journals", function (Blueprint $table) {
-			$table->ulid("id_journal")->primary();
+			$table->ulid("id_journal")->unique();
 
 			$table->unsignedBigInteger("student_id");
 			$table->foreign("student_id")->references("id_user")->on("users")->onDelete("cascade")->onUpdate("cascade");
@@ -27,7 +27,8 @@ return new class extends Migration {
 
 			$table->enum("status", ["not_created", "in_review", "needs_revision", "approved", "not_present"])->default("not_created");
 			$table->date("date");
-			$table->string("description")->nullable();
+			$table->text("description")->nullable();
+			$table->text("feedback")->nullable();
 			$table->string("image_path")->nullable();
 			$table->string("captured_at")->nullable();
 			$table->timestamps();

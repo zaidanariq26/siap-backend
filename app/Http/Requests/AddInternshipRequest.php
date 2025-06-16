@@ -26,8 +26,8 @@ class AddInternshipRequest extends FormRequest
 			"job_name" => "required|string|max:255",
 			"company_name" => "required|string|max:255",
 			"instructor_name" => "required|string|max:255",
-			"instructor_contact" => "required|string|regex:/^[0-9]+$/|min:5|max:15",
-			"teacher_contact" => "required|string|regex:/^[0-9]+$/|min:5|max:15",
+			"instructor_contact" => "required|string|regex:/^[0-9]+$/|min:10|max:15",
+			"teacher_contact" => "required|string|regex:/^[0-9]+$/|min:10|max:15",
 			"start_date" => "required|date|after_or_equal:today",
 			"end_date" => "required|date|after:start_date",
 		];
@@ -51,16 +51,16 @@ class AddInternshipRequest extends FormRequest
 			"instructor_name.string" => "Nama instruktur harus berupa teks.",
 			"instructor_name.max" => "Nama instruktur tidak boleh lebih dari 255 karakter.",
 
-			"instructor_contact.required" => "Kontak guru pembimbing wajib diisi.",
-			"instructor_contact.string" => "Kontak guru pembimbing harus berupa teks.",
-			"instructor_contact.regex" => "Kontak guru pembimbing hanya boleh berisi angka.",
-			"instructor_contact.min" => "Kontak guru pembimbing minimal terdiri dari 5 digit.",
-			"instructor_contact.max" => "Kontak guru pembimbing tidak boleh lebih dari 15 digit.",
+			"instructor_contact.required" => "Kontak instruktur wajib diisi.",
+			"instructor_contact.string" => "Kontak instruktur harus berupa teks.",
+			"instructor_contact.regex" => "Kontak instruktur hanya boleh berisi angka.",
+			"instructor_contact.min" => "Kontak instruktur minimal terdiri dari 10 digit.",
+			"instructor_contact.max" => "Kontak instruktur tidak boleh lebih dari 15 digit.",
 
 			"teacher_contact.required" => "Kontak guru pembimbing wajib diisi.",
 			"teacher_contact.string" => "Kontak guru pembimbing harus berupa teks.",
 			"teacher_contact.regex" => "Kontak guru pembimbing hanya boleh berisi angka.",
-			"teacher_contact.min" => "Kontak guru pembimbing minimal terdiri dari 5 digit.",
+			"teacher_contact.min" => "Kontak guru pembimbing minimal terdiri dari 10 digit.",
 			"teacher_contact.max" => "Kontak guru pembimbing tidak boleh lebih dari 15 digit.",
 
 			"start_date.required" => "Tanggal mulai wajib diisi.",

@@ -10,7 +10,7 @@ class MajorController extends Controller
 	public function getAllMajors()
 	{
 		try {
-			$majors = Major::get(["id_major", "code", "name"]);
+			$majors = Major::with(["majorLeader", "majorLeader.teacher"])->get();
 
 			return response()->json(
 				[

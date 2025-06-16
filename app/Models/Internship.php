@@ -55,4 +55,14 @@ class Internship extends Model
 	{
 		return $this->hasMany(Journal::class, "internship_id", "id_internship");
 	}
+
+	/**
+	 * Get all journals connected to this internship.
+	 *
+	 * @return HasMany
+	 */
+	public function assesments(): HasMany
+	{
+		return $this->hasMany(Assesment::class, "internship_id", "id_internship");
+	}
 }

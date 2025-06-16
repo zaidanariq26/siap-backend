@@ -20,20 +20,20 @@ class Major extends Model
 	}
 
 	/**
-	 * Get the teacher records that owned the major
-	 *
-	 */
-	public function teachers(): HasMany
-	{
-		return $this->hasMany(Teacher::class, "major_id", "id_major");
-	}
-
-	/**
 	 * Get the instrument records that connected with the major
 	 *
 	 */
 	public function instrument()
 	{
 		return $this->hasOne(Instrument::class, "major_id", "id_major");
+	}
+
+	/**
+	 * Get the major leader records that connected with the major
+	 *
+	 */
+	public function majorLeader()
+	{
+		return $this->belongsTo(User::class, "major_leader_id", "id_user");
 	}
 }

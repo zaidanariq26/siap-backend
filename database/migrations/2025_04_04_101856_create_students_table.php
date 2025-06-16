@@ -11,15 +11,15 @@ return new class extends Migration {
 	public function up(): void
 	{
 		Schema::create("students", function (Blueprint $table) {
-			$table->bigIncrements("id_user")->primary();
+			$table->bigIncrements("id_user");
 
 			$table->unsignedBigInteger("user_id");
 			$table->foreign("user_id")->references("id_user")->on("users")->onDelete("cascade")->onUpdate("cascade");
 
-			$table->string("firstname")->nullable();
+			$table->string("firstname");
 			$table->string("lastname")->nullable();
 			$table->string("nisn", 10)->unique();
-			$table->string("npsn")->nullable();
+			$table->string("npsn", 8)->nullable();
 			$table->string("school")->nullable();
 
 			$table->unsignedBigInteger("major_id")->nullable();
@@ -30,11 +30,11 @@ return new class extends Migration {
 
 			$table->string("birthplace")->nullable();
 			$table->date("birthdate")->nullable();
-			$table->string("contact")->nullable();
-			$table->string("religion")->nullable();
+			$table->string("contact", 15)->nullable();
+			$table->enum("religion", ["islam", "katolik", "protestan", "hindu", "buddha", "konghucu"])->nullable();
 			$table->enum("gender", ["male", "female"])->nullable();
 			$table->string("avatar")->nullable();
-			$table->string("emergency_contact")->nullable();
+			$table->string("emergency_contact", 15)->nullable();
 			$table->string("emergency_contact_name")->nullable();
 			$table->timestamps();
 		});

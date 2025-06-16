@@ -32,7 +32,7 @@ class TeacherController extends Controller
 	public function getAllTeachers()
 	{
 		try {
-			$teachers = User::whereNot("role", "peserta_didik")->get();
+			$teachers = User::whereNot("role", "peserta_didik")->with("teacher")->get();
 
 			return response()->json(
 				[

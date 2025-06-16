@@ -11,25 +11,21 @@ return new class extends Migration {
 	public function up(): void
 	{
 		Schema::create("teachers", function (Blueprint $table) {
-			$table->bigIncrements("id_teacher")->primary();
+			$table->bigIncrements("id_teacher");
 
 			$table->unsignedBigInteger("user_id");
 			$table->foreign("user_id")->references("id_user")->on("users")->onDelete("cascade")->onUpdate("cascade");
 
-			$table->string("firstname")->nullable();
+			$table->string("firstname");
 			$table->string("lastname")->nullable();
-			$table->string("nip")->unique()->nullable();
-			$table->string("npsn")->nullable();
-			$table->string("school")->nullable();
+			$table->string("nip", 18)->unique()->nullable();
+			$table->string("npsn", 8);
+			$table->string("school");
 			$table->string("birthplace")->nullable();
 			$table->date("birthdate")->nullable();
 			$table->string("position")->nullable();
-
-			$table->unsignedBigInteger("major_id")->nullable();
-			$table->foreign("major_id")->references("id_major")->on("majors")->onDelete("set null")->onUpdate("cascade");
-
-			$table->string("contact")->nullable();
-			$table->string("religion")->nullable();
+			$table->string("contact", 15)->nullable();
+			$table->enum("religion", ["islam", "katolik", "protestan", "hindu", "buddha", "konghucu"])->nullable();
 			$table->string("avatar")->nullable();
 			$table->enum("gender", ["male", "female"])->nullable();
 			$table->timestamps();

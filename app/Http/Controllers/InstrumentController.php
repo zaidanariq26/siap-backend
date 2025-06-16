@@ -28,7 +28,6 @@ class InstrumentController extends Controller
 				"teacher_id" => $user->id_user,
 				"status" => "not_applied",
 				"academic_year" => $validatedData["academic_year"],
-				"note" => $validatedData["note"] ?? null,
 			]);
 
 			foreach ($validatedData["instrument"] as $sectionData) {
@@ -74,6 +73,61 @@ class InstrumentController extends Controller
 		}
 	}
 
+	public function updateInstrument(CreateInstrumentRequest $request, Instrument $instrument)
+	{
+		$validatedData = $request->validated();
+
+		try {
+			DB::beginTransaction();
+
+			$user = Auth::user();
+
+			$instrument->update([
+				"major_id" => $validatedData["major_id"],
+				"teacher_id" => $user->id_user,
+				"academic_year" => $validatedData["academic_year"],
+			]);
+
+			$instrument->instrumentSections()->delete();
+
+			foreach ($validatedData["instrument"] as $sectionData) {
+				$section = InstrumentSection::create([
+					"instrument_id" => $instrument->id_instrument,
+					"section_code" => $sectionData["section_code"],
+					"section_label" => $sectionData["section_label"],
+				]);
+
+				foreach ($sectionData["items"] as $itemData) {
+					InstrumentItem::create([
+						"instrument_section_id" => $section->id_instrument_section,
+						"item_code" => $itemData["item_code"],
+						"item_label" => $itemData["item_label"],
+					]);
+				}
+			}
+
+			DB::commit();
+
+			$instrument->loadMissing(["majorDetail", "instrumentSections", "instrumentSections.instrumentItems"]);
+
+			return response()->json([
+				"message" => "Instrumen PKL Berhasil Diperbarui",
+				"data" => [$instrument],
+			]);
+		} catch (\Exception $e) {
+			DB::rollBack();
+			Log::error("Instrumen Error= {$e}");
+
+			return response()->json(
+				[
+					"message" => "Terjadi kesalahan saat mengedit instrumen PKL. Silakan coba lagi!",
+					"error" => app()->environment("local") ? $e->getMessage() : null,
+				],
+				500
+			);
+		}
+	}
+
 	public function getInstrument()
 	{
 		try {
@@ -109,7 +163,7 @@ class InstrumentController extends Controller
 		]);
 
 		try {
-			$user = Auth::user()->loadMissing("teacher");
+			$user = Auth::user()->loadMissing("majorLed");
 
 			if ($user->role !== "kepala_program") {
 				return response()->json(
@@ -129,10 +183,10 @@ class InstrumentController extends Controller
 				);
 			}
 
-			Instrument::where("major_id", $user->teacher->major_id)->update(["status" => $validatedData["status"]]);
+			Instrument::where("major_id", $user->majorLed->id_major)->update(["status" => $validatedData["status"]]);
 
 			$instruments = Instrument::with(["majorDetail", "instrumentSections", "instrumentSections.instrumentItems"])
-				->where("major_id", $user->teacher->major_id)
+				->where("major_id", $user->majorLed->id_major)
 				->get();
 
 			return response()->json([

@@ -19,13 +19,4 @@ class Teacher extends Model
 	{
 		return $this->belongsTo(User::class, "user_id");
 	}
-
-	/**
-	 * Get the major detail as a Teacher.
-	 *
-	 */
-	public function majorDetail(): BelongsTo
-	{
-		return $this->belongsTo(Major::class, "major_id");
-	}
 }

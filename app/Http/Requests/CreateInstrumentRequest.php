@@ -24,7 +24,6 @@ class CreateInstrumentRequest extends FormRequest
 		return [
 			"major_id" => "required|exists:majors,id_major",
 			"academic_year" => "required|string",
-			"note" => "nullable|string",
 			"instrument" => "required|array",
 		];
 	}
@@ -37,8 +36,6 @@ class CreateInstrumentRequest extends FormRequest
 
 			"academic_year.required" => "Tahun ajaran wajib diisi.",
 			"academic_year.string" => "Format tahun ajaran harus berupa teks.",
-
-			"note.string" => "Catatan harus berupa teks.",
 
 			"instrument.required" => "Instrumen penilaian wajib diisi.",
 			"instrument.array" => "Format instrumen penilaian tidak valid.",

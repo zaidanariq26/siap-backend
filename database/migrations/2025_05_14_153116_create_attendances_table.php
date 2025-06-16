@@ -11,7 +11,7 @@ return new class extends Migration {
 	public function up(): void
 	{
 		Schema::create("attendances", function (Blueprint $table) {
-			$table->ulid("id_attendance")->primary();
+			$table->ulid("id_attendance")->unique();
 
 			$table->unsignedBigInteger("student_id");
 			$table->foreign("student_id")->references("id_user")->on("users")->onDelete("cascade")->onUpdate("cascade");
@@ -19,7 +19,7 @@ return new class extends Migration {
 			$table->unsignedBigInteger("teacher_id")->nullable();
 			$table->foreign("teacher_id")->references("id_user")->on("users")->onDelete("set null")->onUpdate("cascade");
 
-			$table->char("internship_id", 26);
+			$table->ulid("internship_id");
 			$table->foreign("internship_id")->references("id_internship")->on("internships")->onDelete("cascade")->onUpdate("cascade");
 
 			$table->enum("status", ["present", "excused", "sick", "no_description", "off"]);

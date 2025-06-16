@@ -11,7 +11,7 @@ return new class extends Migration {
 	public function up(): void
 	{
 		Schema::create("internships", function (Blueprint $table) {
-			$table->ulid("id_internship")->primary();
+			$table->ulid("id_internship")->unique();
 
 			$table->unsignedBigInteger("student_id");
 			$table->foreign("student_id")->references("id_user")->on("users")->onDelete("cascade")->onUpdate("cascade");
@@ -22,8 +22,8 @@ return new class extends Migration {
 			$table->string("job_name");
 			$table->string("company_name");
 			$table->string("instructor_name");
-			$table->string("instructor_contact");
-			$table->string("teacher_contact");
+			$table->string("instructor_contact", 15);
+			$table->string("teacher_contact", 15);
 			$table->date("start_date");
 			$table->date("end_date");
 			$table->enum("status", ["pending", "ongoing", "completed"])->default("pending");

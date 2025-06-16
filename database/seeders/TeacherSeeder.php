@@ -29,6 +29,7 @@ class TeacherSeeder extends Seeder
 			"firstname" => "Nila",
 			"lastname" => "Citra",
 			"nip" => 1111111123,
+			"npsn" => "20100159",
 			"school" => "SMKN 16 Jakarta",
 			"birthplace" => "jakarta",
 			"birthdate" => Carbon::parse("1990-05-10"),
@@ -51,13 +52,13 @@ class TeacherSeeder extends Seeder
 			"firstname" => "Amir",
 			"lastname" => "Nur",
 			"nip" => 1111113123,
+			"npsn" => "20100159",
 			"school" => "SMKN 16 Jakarta",
 			"birthplace" => "jakarta",
 			"birthdate" => Carbon::parse("1990-05-10"),
 			"contact" => "08282882882",
 			"religion" => "islam",
 			"gender" => "male",
-			"major_id" => 1,
 		]);
 	}
 }

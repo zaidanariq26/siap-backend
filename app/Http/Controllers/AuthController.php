@@ -169,13 +169,15 @@ class AuthController extends Controller
 				$dataUser = Cache::remember("auth_user_{$user->id_user}", now()->addHours(2), function () use ($user) {
 					if ($user->role == "peserta_didik") {
 						return $user->loadMissing(["student", "student.homeroomTeacher", "student.majorDetail"]);
+					} elseif ($user->role == "kepala_program") {
+						return $user->loadMissing(["teacher", "majorLed"]);
 					}
 
-					return $user->loadMissing(["teacher", "teacher.majorDetail"]);
+					return $user->loadMissing(["teacher"]);
 				});
 
 				return response()->json([
-					"message" => "Login berhasil!",
+					"message" => "Login Berhasil",
 					"data" => $dataUser,
 				]);
 			}
@@ -189,7 +191,6 @@ class AuthController extends Controller
 			Log::error($e);
 			return response()->json(
 				[
-					"code" => 500,
 					"message" => "Terjadi kesalahan saat login. Silahkan coba lagi!",
 					"error" => app()->environment("local") ? $e->getMessage() : null,
 				],

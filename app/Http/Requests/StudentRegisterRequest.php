@@ -22,7 +22,7 @@ class StudentRegisterRequest extends FormRequest
 	public function rules(): array
 	{
 		return [
-			"nisn" => "nullable|string|digits:10",
+			"nisn" => "required|string|digits:10",
 			"email" => "required|email|unique:users,email",
 			"password" => "required|confirmed|string|min:8",
 			"firstname" => "required|string",

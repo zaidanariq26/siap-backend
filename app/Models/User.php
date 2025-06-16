@@ -144,4 +144,14 @@ class User extends Authenticatable
 	{
 		return $this->hasOne(Instrument::class, "teacher_id", "id_user");
 	}
+
+	/**
+	 * Get the major's data from the Major model as a major leader
+	 *
+	 * @return HasOne
+	 */
+	public function majorLed(): HasOne
+	{
+		return $this->hasOne(Major::class, "major_leader_id", "id_user");
+	}
 }
