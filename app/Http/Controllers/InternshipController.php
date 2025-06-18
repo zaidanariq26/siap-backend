@@ -97,7 +97,7 @@ class InternshipController extends Controller
 		try {
 			DB::beginTransaction();
 
-			if ($internship->status === "completed") {
+			if ($internship->status == "completed") {
 				return response()->json(
 					[
 						"status" => "internship_completed",
@@ -147,7 +147,7 @@ class InternshipController extends Controller
 	public function setInternshipCompleted(Internship $internship)
 	{
 		try {
-			if (auth()->id() !== $internship->student_id) {
+			if (auth()->id() != $internship->student_id) {
 				return response()->json(
 					[
 						"message" => "Anda tidak memiliki izin untuk menyelesaikan PKL ini.",
@@ -156,7 +156,7 @@ class InternshipController extends Controller
 				);
 			}
 
-			if ($internship->status === "completed") {
+			if ($internship->status == "completed") {
 				return response()->json(
 					[
 						"status" => "internship_completed",
@@ -166,7 +166,7 @@ class InternshipController extends Controller
 				);
 			}
 
-			if ($internship->status === "pending") {
+			if ($internship->status == "pending") {
 				return response()->json(
 					[
 						"status" => "internship_not_started",
@@ -233,7 +233,7 @@ class InternshipController extends Controller
 		try {
 			$user = Auth::user();
 
-			if ($user->role === "wali_kelas") {
+			if ($user->role == "wali_kelas") {
 				$internships = Internship::where("status", "ongoing")
 					->where(function ($internshipQuery) use ($user) {
 						$internshipQuery->whereHas("student", function ($userQuery) use ($user) {
@@ -243,17 +243,17 @@ class InternshipController extends Controller
 						});
 					})
 					->get();
-			} elseif ($user->role === "kepala_program") {
+			} elseif ($user->role == "kepala_program") {
 				$internships = Internship::where("status", "ongoing")
 					->where(function ($internshipQuery) use ($user) {
 						$internshipQuery->whereHas("student", function ($userQuery) use ($user) {
 							$userQuery->whereHas("student", function ($studentQuery) use ($user) {
-								$studentQuery->where("major_id", $user->teacher->major_id);
+								$studentQuery->where("major_id", $user->majorLed->id_major);
 							});
 						});
 					})
 					->get();
-			} elseif ($user->role === "manajemen_sekolah") {
+			} elseif ($user->role == "manajemen_sekolah") {
 				$internships = Internship::where("status", "ongoing")->get();
 			} else {
 				$internships = Internship::where("status", "ongoing")->where("teacher_id", $user->id_user)->get();

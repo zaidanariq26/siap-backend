@@ -11,7 +11,7 @@ class EditProfileTeacherRequest extends FormRequest
 	 */
 	public function authorize(): bool
 	{
-		return auth()->user()->role !== "peserta_didik";
+		return auth()->user()->role != "peserta_didik";
 	}
 
 	/**
@@ -28,7 +28,7 @@ class EditProfileTeacherRequest extends FormRequest
 			"lastname" => "nullable|string|max:255",
 			"email" => "required|email|unique:users,email,{$userId},id_user",
 			"school" => "required|string|max:255",
-			"nip" => "required|string|regex:/^[0-9]+$/",
+			"nip" => "required|string|regex:/^[0-9]+$/|digits:18",
 			"birthplace" => "required|string|max:255",
 			"birthdate" => "required|date|before:today",
 			"contact" => "required|string|regex:/^[0-9]+$/|min:5|max:15",
@@ -51,6 +51,7 @@ class EditProfileTeacherRequest extends FormRequest
 			"nip.required" => "NIP wajib diisi.",
 			"nip.string" => "NIP harus berupa teks.",
 			"nip.regex" => "NIP hanya boleh berisi angka.",
+			"nip.digits" => "NIP harus terdiri dari 18 angka.",
 
 			"birthplace.required" => "Tempat lahir wajib diisi.",
 			"birthdate.required" => "Tanggal lahir wajib diisi.",

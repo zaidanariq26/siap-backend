@@ -29,7 +29,7 @@ class ProfileController extends Controller
 			}
 
 			$slug = $user->slug;
-			if ($user->name !== $fullName) {
+			if ($user->name != $fullName) {
 				$slug = SlugHelper::generateUniqueSlug(User::class, $fullName, "slug", $user->id_user);
 			}
 
@@ -117,7 +117,7 @@ class ProfileController extends Controller
 			Cache::forget("auth_user_{$userId}");
 
 			$user = Cache::store("database")->remember("auth_user_{$userId}", now()->addMinutes(120), function () use ($user) {
-				$user->loadMissing(["teacher", "teacher.majorDetail"]);
+				$user->loadMissing(["teacher"]);
 				return $user;
 			});
 

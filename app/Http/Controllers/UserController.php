@@ -18,9 +18,9 @@ class UserController extends Controller
 			$user = Auth::user()->loadMissing("teacher");
 
 			$user = Cache::remember("auth_user_{$user->id_user}", now()->addHours(2), function () use ($user) {
-				if ($user->role === "peserta_didik") {
+				if ($user->role == "peserta_didik") {
 					return $user->loadMissing(["student", "student.homeroomTeacher", "student.majorDetail"]);
-				} elseif ($user->role === "kepala_program") {
+				} elseif ($user->role == "kepala_program") {
 					return $user->loadMissing(["teacher", "majorLed"]);
 				}
 

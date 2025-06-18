@@ -135,7 +135,7 @@ class InstrumentController extends Controller
 
 			$with = ["majorDetail", "instrumentSections", "instrumentSections.instrumentItems"];
 
-			if ($user->role === "kepala_program") {
+			if ($user->role == "kepala_program") {
 				$instruments = Instrument::with($with)->get();
 			} else {
 				$instruments = Instrument::with($with)->where("status", "applied")->get();
@@ -165,7 +165,7 @@ class InstrumentController extends Controller
 		try {
 			$user = Auth::user()->loadMissing("majorLed");
 
-			if ($user->role !== "kepala_program") {
+			if ($user->role != "kepala_program") {
 				return response()->json(
 					[
 						"message" => "Anda tidak memiliki izin untuk mengubah status instrumen.",

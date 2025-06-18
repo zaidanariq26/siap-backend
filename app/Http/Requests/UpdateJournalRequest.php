@@ -11,7 +11,7 @@ class UpdateJournalRequest extends FormRequest
 	 */
 	public function authorize(): bool
 	{
-		return auth()->user()->role === "peserta_didik";
+		return auth()->user()->role == "peserta_didik";
 	}
 
 	/**

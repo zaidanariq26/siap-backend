@@ -18,7 +18,7 @@ return new class extends Migration {
 
 			$table->string("firstname");
 			$table->string("lastname")->nullable();
-			$table->string("nisn", 10)->unique();
+			$table->string("nisn", 10);
 			$table->string("npsn", 8)->nullable();
 			$table->string("school")->nullable();
 

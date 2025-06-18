@@ -18,9 +18,9 @@ class TeacherSeeder extends Seeder
 		$user = User::create([
 			"name" => "Nila Citra",
 			"slug" => "nila-citra",
-			"email" => "walas@gmail.com",
+			"email" => "nila_citra@gmail.com",
 			"password" => bcrypt("password"),
-			"role" => "wali_kelas",
+			"role" => "manajemen_sekolah",
 			"email_verified_at" => now(),
 		]);
 
@@ -33,6 +33,7 @@ class TeacherSeeder extends Seeder
 			"school" => "SMKN 16 Jakarta",
 			"birthplace" => "jakarta",
 			"birthdate" => Carbon::parse("1990-05-10"),
+			"position" => "Kepala Sekolah",
 			"contact" => "08282882882",
 			"religion" => "islam",
 			"gender" => "female",
@@ -41,10 +42,10 @@ class TeacherSeeder extends Seeder
 		$kpk = User::create([
 			"name" => "Amir Nur",
 			"slug" => "amir-nur",
-			"email" => "kpk@gmail.com",
+			"email" => "amir_nur@gmail.com",
 			"password" => bcrypt("password"),
 			"email_verified_at" => now(),
-			"role" => "kepala_program",
+			"role" => "wali_kelas",
 		]);
 
 		Teacher::create([

@@ -64,13 +64,13 @@ class GenerateMissingAttendance extends Command
 						"status" => $status,
 					];
 
-					if ($status === "no_description") {
+					if ($status == "no_description") {
 						$attendanceData["expired_at"] = $today->copy()->addDays(2);
 					}
 
 					$attendance = Attendance::create($attendanceData);
 
-					if ($attendance->status !== "off") {
+					if ($attendance->status != "off") {
 						Journal::create([
 							"student_id" => $attendance->student_id,
 							"teacher_id" => $attendance->teacher_id,

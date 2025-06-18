@@ -43,7 +43,7 @@ class AttendanceController extends Controller
 				})
 				->first();
 
-			if ($validatedData["status"] === "sick") {
+			if ($validatedData["status"] == "sick") {
 				if ($request->hasFile("attachment")) {
 					if ($existingAttendance && $existingAttendance->attachment) {
 						Storage::disk("public")->delete($existingAttendance->attachment);
@@ -68,14 +68,14 @@ class AttendanceController extends Controller
 				"expired_at" => null,
 			];
 
-			$statusJournal = $attendanceData["status"] !== "present" ? "not_present" : "not_created";
+			$statusJournal = $attendanceData["status"] != "present" ? "not_present" : "not_created";
 
 			if ($existingAttendance) {
-				if ($existingAttendance->status === "no_description") {
+				if ($existingAttendance->status == "no_description") {
 					$existingAttendance->update($attendanceData);
 					$existingAttendance->journal->update(["status" => $statusJournal]);
 					$attendance = $existingAttendance;
-				} elseif ($existingAttendance->status === "off") {
+				} elseif ($existingAttendance->status == "off") {
 					$existingAttendance->update($attendanceData);
 					$attendance = $existingAttendance;
 
@@ -181,7 +181,7 @@ class AttendanceController extends Controller
 
 			DB::beginTransaction();
 
-			if ($validatedData["status"] === "sick") {
+			if ($validatedData["status"] == "sick") {
 				if ($request->hasFile("attachment")) {
 					if ($attendance && $attendance->attachment) {
 						Storage::disk("public")->delete($attendance->attachment);
@@ -202,7 +202,7 @@ class AttendanceController extends Controller
 				"expired_at" => null,
 			];
 
-			$statusJournal = $attendanceData["status"] !== "present" ? "not_present" : "not_created";
+			$statusJournal = $attendanceData["status"] != "present" ? "not_present" : "not_created";
 
 			$attendance->update($attendanceData);
 
@@ -238,7 +238,7 @@ class AttendanceController extends Controller
 		try {
 			$user = Auth::user();
 
-			if ($user->role === "wali_kelas") {
+			if ($user->role == "wali_kelas") {
 				$attendances = Attendance::where("status", "!=", "off")
 					->where(function ($attendanceQuery) use ($user) {
 						$attendanceQuery
@@ -252,7 +252,7 @@ class AttendanceController extends Controller
 							});
 					})
 					->get();
-			} elseif ($user->role === "kepala_program") {
+			} elseif ($user->role == "kepala_program") {
 				$attendances = Attendance::where("status", "!=", "off")
 					->where(function ($attendanceQuery) use ($user) {
 						$attendanceQuery
@@ -266,9 +266,9 @@ class AttendanceController extends Controller
 							});
 					})
 					->get();
-			} elseif ($user->role === "manajemen_sekolah") {
+			} elseif ($user->role == "manajemen_sekolah") {
 				$attendances = Attendance::where("status", "!=", "off")->get();
-			} elseif ($user->role === "guru_pembimbing") {
+			} elseif ($user->role == "guru_pembimbing") {
 				$attendances = Attendance::where("status", "!=", "off")
 					->where(function ($attendanceQuery) use ($user) {
 						$attendanceQuery->whereHas("internship", function ($internshipQuery) use ($user) {

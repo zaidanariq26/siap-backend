@@ -14,47 +14,47 @@ class UserSeeder extends Seeder
 	 */
 	public function run(): void
 	{
-		// Teacher
-		User::create([
-			"name" => "Musa Ali",
-			"slug" => "musa-ali",
-			"email" => "kepsek@gmail.com",
-			"password" => bcrypt("password"),
-			"email_verified_at" => now(),
-			"role" => "manajemen_sekolah",
-		]);
+		// // Teacher
+		// User::create([
+		// 	"name" => "Musa Ali",
+		// 	"slug" => "musa-ali",
+		// 	"email" => "kepsek@gmail.com",
+		// 	"password" => bcrypt("password"),
+		// 	"email_verified_at" => now(),
+		// 	"role" => "manajemen_sekolah",
+		// ]);
 
-		User::create([
-			"name" => "Afifah Irfan",
-			"slug" => "afifah-irfan",
-			"email" => "gupem@gmail.com",
-			"password" => bcrypt("password"),
-			"email_verified_at" => now(),
-			"role" => "guru_pembimbing",
-		]);
+		// User::create([
+		// 	"name" => "Afifah Irfan",
+		// 	"slug" => "afifah-irfan",
+		// 	"email" => "gupem@gmail.com",
+		// 	"password" => bcrypt("password"),
+		// 	"email_verified_at" => now(),
+		// 	"role" => "guru_pembimbing",
+		// ]);
 
-		$names = [
-			"Rizky Ramadhan",
-			"Alya Putri",
-			"Fauzan Hidayat",
-			"Nadia Zahra",
-			"Iqbal Maulana",
-			"Salsabila Aulia",
-			"Dimas Aditya",
-			"Kirana Lestari",
-			"Zaki Alfarizi",
-			"Citra Ayuningtyas",
-		];
+		// $names = [
+		// 	"Rizky Ramadhan",
+		// 	"Alya Putri",
+		// 	"Fauzan Hidayat",
+		// 	"Nadia Zahra",
+		// 	"Iqbal Maulana",
+		// 	"Salsabila Aulia",
+		// 	"Dimas Aditya",
+		// 	"Kirana Lestari",
+		// 	"Zaki Alfarizi",
+		// 	"Citra Ayuningtyas",
+		// ];
 
-		foreach ($names as $index => $name) {
-			User::create([
-				"name" => $name,
-				"slug" => Str::slug($name),
-				"email" => "peserta" . ($index + 1) . "@gmail.com",
-				"password" => bcrypt("password"),
-				"email_verified_at" => now(),
-				"role" => "guru_pembimbing",
-			]);
-		}
+		// foreach ($names as $index => $name) {
+		// 	User::create([
+		// 		"name" => $name,
+		// 		"slug" => Str::slug($name),
+		// 		"email" => "peserta" . ($index + 1) . "@gmail.com",
+		// 		"password" => bcrypt("password"),
+		// 		"email_verified_at" => now(),
+		// 		"role" => "guru_pembimbing",
+		// 	]);
+		// }
 	}
 }

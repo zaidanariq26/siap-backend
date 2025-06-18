@@ -56,7 +56,7 @@ class JournalController extends Controller
 		try {
 			$userId = Auth::id();
 
-			if ($journal->student_id !== $userId) {
+			if ($journal->student_id != $userId) {
 				return response()->json(["message" => "Akses ditolak."], 403);
 			}
 
@@ -131,7 +131,7 @@ class JournalController extends Controller
 		try {
 			$user = Auth::user();
 
-			if ($journal->teacher_id !== $user->id_user) {
+			if ($journal->teacher_id != $user->id_user) {
 				return response()->json(["status" => "review_rejected", "message" => "Anda tidak memiliki akses untuk meninjau jurnal ini."], 403);
 			}
 

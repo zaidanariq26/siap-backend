@@ -127,7 +127,7 @@ class AuthController extends Controller
 			Auth::login($user);
 
 			$user = Cache::store("database")->remember("auth_user_{$user->id_user}", now()->addMinutes(120), function () use ($user) {
-				$user = $user->loadMissing(["teacher", "teacher.majorDetail"]);
+				$user = $user->loadMissing(["teacher"]);
 				return $user;
 			});
 
@@ -225,7 +225,7 @@ class AuthController extends Controller
 				"created_at" => Carbon::now(),
 			]);
 
-			$prefixRole = $user->role !== "peserta_didik" ? "/guru" : "";
+			$prefixRole = $user->role != "peserta_didik" ? "/guru" : "";
 
 			$resetLink = env("FRONTEND_URL") . "{$prefixRole}/reset-password?token={$resetToken}&email=" . urlencode($user->email);
 

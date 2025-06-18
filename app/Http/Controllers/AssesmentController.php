@@ -17,7 +17,7 @@ class AssesmentController extends Controller
 			"note" => "nullable|string",
 		]);
 
-		if ($assesment->status === "success") {
+		if ($assesment->status == "success") {
 			return response()->json(
 				[
 					"message" => "Penilaian sudah dilakukan dan tidak dapat diubah.",

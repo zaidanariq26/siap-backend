@@ -18,7 +18,7 @@ class CheckProfileCompleteness
 	{
 		$user = Auth::user();
 
-		if ($user && $user->role === "peserta_didik") {
+		if ($user && $user->role == "peserta_didik") {
 			$student = $user->student;
 
 			$requiredFields = [
