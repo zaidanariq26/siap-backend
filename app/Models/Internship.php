@@ -57,12 +57,22 @@ class Internship extends Model
 	}
 
 	/**
-	 * Get all journals connected to this internship.
+	 * Get all assesments connected to this internship.
 	 *
 	 * @return HasMany
 	 */
 	public function assesments(): HasMany
 	{
 		return $this->hasMany(Assesment::class, "internship_id", "id_internship");
+	}
+
+	/**
+	 * Get all observations connected to this internship.
+	 *
+	 * @return HasMany
+	 */
+	public function observations(): HasMany
+	{
+		return $this->hasMany(Observation::class, "internship_id", "id_internship");
 	}
 }

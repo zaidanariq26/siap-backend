@@ -11,7 +11,7 @@ return new class extends Migration {
 	public function up(): void
 	{
 		Schema::create("students", function (Blueprint $table) {
-			$table->bigIncrements("id_user");
+			$table->bigIncrements("id_student");
 
 			$table->unsignedBigInteger("user_id");
 			$table->foreign("user_id")->references("id_user")->on("users")->onDelete("cascade")->onUpdate("cascade");
@@ -31,7 +31,6 @@ return new class extends Migration {
 			$table->string("birthplace")->nullable();
 			$table->date("birthdate")->nullable();
 			$table->string("contact", 15)->nullable();
-			$table->enum("religion", ["islam", "katolik", "protestan", "hindu", "buddha", "konghucu"])->nullable();
 			$table->enum("gender", ["male", "female"])->nullable();
 			$table->string("avatar")->nullable();
 			$table->string("emergency_contact", 15)->nullable();

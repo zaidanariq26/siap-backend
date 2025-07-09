@@ -130,7 +130,7 @@ class AttendanceController extends Controller
 		}
 	}
 
-	public function getAllAttendances()
+	public function getMyAttendances()
 	{
 		try {
 			$userId = Auth::id();
@@ -197,6 +197,7 @@ class AttendanceController extends Controller
 				"date" => $validatedData["date"] ?: Carbon::now(config("app.timezone"))->toDateString(),
 				"latitude" => $validatedData["latitude"],
 				"longitude" => $validatedData["longitude"],
+				"accuracy" => $validatedData["accuracy"],
 				"note" => $validatedData["note"] ?? null,
 				"attachment" => $validatedData["attachment"] ?? null,
 				"expired_at" => null,
@@ -233,7 +234,7 @@ class AttendanceController extends Controller
 		}
 	}
 
-	public function getAllStudentAttendances()
+	public function getAllAttendancesByRole()
 	{
 		try {
 			$user = Auth::user();

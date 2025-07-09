@@ -35,7 +35,6 @@ class TeacherSeeder extends Seeder
 			"birthdate" => Carbon::parse("1990-05-10"),
 			"position" => "Kepala Sekolah",
 			"contact" => "08282882882",
-			"religion" => "islam",
 			"gender" => "female",
 		]);
 
@@ -58,7 +57,6 @@ class TeacherSeeder extends Seeder
 			"birthplace" => "jakarta",
 			"birthdate" => Carbon::parse("1990-05-10"),
 			"contact" => "08282882882",
-			"religion" => "islam",
 			"gender" => "male",
 		]);
 	}

@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Assesment;
-use App\Models\Journal;
 use Carbon\Carbon;
+use App\Models\Journal;
+use App\Models\Assesment;
 use App\Models\Internship;
+use App\Models\Observation;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\AddInternshipRequest;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
+use App\Http\Requests\AddInternshipRequest;
 
 class InternshipController extends Controller
 {
@@ -53,10 +54,10 @@ class InternshipController extends Controller
 			$internship = Internship::create($validatedData);
 
 			for ($i = 1; $i <= 6; $i++) {
-				Assesment::create([
+				Observation::create([
 					"internship_id" => $internship->id_internship,
-					"name" => "Asesmen Bulan Ke-$i",
-					"status" => "needs_assesment",
+					"name" => "Observasi Bulan Ke-$i",
+					"status" => "needs_observation",
 				]);
 			}
 
@@ -79,7 +80,7 @@ class InternshipController extends Controller
 			);
 		} catch (\Exception $e) {
 			DB::rollBack();
-
+			Log::error($e);
 			return response()->json(
 				[
 					"message" => "Terjadi kesalahan saat menyimpan data PKL. Silakan coba lagi!",
@@ -206,7 +207,7 @@ class InternshipController extends Controller
 		}
 	}
 
-	public function getAllInternships()
+	public function getMyInternships()
 	{
 		try {
 			$userId = Auth::id();
@@ -228,35 +229,31 @@ class InternshipController extends Controller
 		}
 	}
 
-	public function getStudentsByRole()
+	public function getAllInternshipsByRole()
 	{
 		try {
 			$user = Auth::user();
 
 			if ($user->role == "wali_kelas") {
-				$internships = Internship::where("status", "ongoing")
-					->where(function ($internshipQuery) use ($user) {
-						$internshipQuery->whereHas("student", function ($userQuery) use ($user) {
-							$userQuery->whereHas("student", function ($studentQuery) use ($user) {
-								$studentQuery->where("homeroom_teacher_id", $user->id_user);
-							});
-						});
-					})
-					->get();
+				$internships = Internship::where(function ($internshipQuery) use ($user) {
+					$internshipQuery
+						->whereHas("student.student", function ($studentQuery) use ($user) {
+							$studentQuery->where("homeroom_teacher_id", $user->id_user);
+						})
+						->orWhere("teacher_id", $user->id_user);
+				})->get();
 			} elseif ($user->role == "kepala_program") {
-				$internships = Internship::where("status", "ongoing")
-					->where(function ($internshipQuery) use ($user) {
-						$internshipQuery->whereHas("student", function ($userQuery) use ($user) {
-							$userQuery->whereHas("student", function ($studentQuery) use ($user) {
-								$studentQuery->where("major_id", $user->majorLed->id_major);
-							});
-						});
-					})
-					->get();
+				$internships = Internship::where(function ($internshipQuery) use ($user) {
+					$internshipQuery
+						->whereHas("student.student", function ($studentQuery) use ($user) {
+							$studentQuery->where("major_id", $user->majorLed->id_major);
+						})
+						->orWhere("teacher_id", $user->id_user);
+				})->get();
 			} elseif ($user->role == "manajemen_sekolah") {
-				$internships = Internship::where("status", "ongoing")->get();
+				$internships = Internship::all();
 			} else {
-				$internships = Internship::where("status", "ongoing")->where("teacher_id", $user->id_user)->get();
+				$internships = Internship::where("teacher_id", $user->id_user)->get();
 			}
 
 			$internships->loadMissing([
@@ -272,6 +269,7 @@ class InternshipController extends Controller
 				"journals",
 				"journals.attendance",
 				"assesments",
+				"observations",
 			]);
 
 			Log::info("Data", [$internships]);

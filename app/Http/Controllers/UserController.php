@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
-	public function authUser()
+	public function getAuthUser()
 	{
 		try {
 			$user = Auth::user()->loadMissing("teacher");
@@ -50,8 +50,8 @@ class UserController extends Controller
 			$users->loadMissing(["student", "teacher", "student.majorDetail"]);
 
 			return response()->json([
-				"data" => $users,
 				"message" => "Data seluruh pengguna berhasil didapatkan.",
+				"data" => $users,
 			]);
 		} catch (\Throwable $e) {
 			return response()->json(
@@ -64,7 +64,7 @@ class UserController extends Controller
 		}
 	}
 
-	public function deleteUser(Request $request)
+	public function deleteMyAccount(Request $request)
 	{
 		try {
 			$user = Auth::user();
@@ -74,16 +74,14 @@ class UserController extends Controller
 			$request->session()->invalidate();
 			$request->session()->regenerateToken();
 
-			$user->delete();
+			$user->forceDelete();
 
 			return response()->json([
-				"code" => 200,
 				"message" => "Akun berhasil dihapus.",
 			]);
 		} catch (\Throwable $e) {
 			return response()->json(
 				[
-					"code" => 500,
 					"message" => "Terjadi kesalahan saat menghapus akun. Silakan coba lagi!",
 					"error" => app()->environment("local") ? $e->getMessage() : null,
 				],
@@ -341,7 +339,7 @@ class UserController extends Controller
 			DB::commit();
 
 			return response()->json([
-				"message" => "Pengguna berhasil ditetapkan sebagai {$position}.",
+				"message" => "Pengguna berhasil ditetapkan sebagai Manajemen Sekolah di bidang {$position}.",
 				"data" => $users,
 			]);
 		} catch (\Throwable $e) {

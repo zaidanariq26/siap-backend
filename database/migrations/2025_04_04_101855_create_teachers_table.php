@@ -18,14 +18,13 @@ return new class extends Migration {
 
 			$table->string("firstname");
 			$table->string("lastname")->nullable();
-			$table->string("nip", 18)->unique()->nullable();
+			$table->string("nip")->nullable();
 			$table->string("npsn", 8);
 			$table->string("school");
 			$table->string("birthplace")->nullable();
 			$table->date("birthdate")->nullable();
 			$table->string("position")->nullable();
 			$table->string("contact", 15)->nullable();
-			$table->enum("religion", ["islam", "katolik", "protestan", "hindu", "buddha", "konghucu"])->nullable();
 			$table->string("avatar")->nullable();
 			$table->enum("gender", ["male", "female"])->nullable();
 			$table->timestamps();

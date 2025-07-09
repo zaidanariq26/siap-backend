@@ -34,7 +34,6 @@ class StudentSeeder extends Seeder
 			"birthplace" => "jakarta",
 			"birthdate" => Carbon::parse("2007-05-10"),
 			"contact" => "08282882882",
-			"religion" => "islam",
 			"gender" => "female",
 			"emergency_contact" => "089898989",
 			"emergency_contact_name" => "Afifah",

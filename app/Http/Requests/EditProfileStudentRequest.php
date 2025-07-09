@@ -34,7 +34,6 @@ class EditProfileStudentRequest extends FormRequest
 			"birthplace" => "required|string|max:255",
 			"birthdate" => "required|date|before:today",
 			"contact" => "required|string|regex:/^[0-9]+$/|min:10|max:15",
-			"religion" => "required|string|in:islam,protestan,katolik,hindu,buddha,konghucu",
 			"gender" => "required|string|in:male,female",
 			"emergency_contact" => "required|string|regex:/^[0-9]+$/|min:10|max:15",
 			"emergency_contact_name" => "required|string|max:255",
@@ -84,10 +83,6 @@ class EditProfileStudentRequest extends FormRequest
 			"contact.regex" => "Kontak hanya boleh berisi angka.",
 			"contact.min" => "Kontak minimal terdiri dari 10 digit.",
 			"contact.max" => "Kontak tidak boleh lebih dari 15 digit.",
-
-			"religion.required" => "Kolom agama wajib diisi.",
-			"religion.string" => "Agama harus berupa teks.",
-			"religion.in" => "Kolom agama tidak valid.",
 
 			"gender.required" => "Jenis kelamin wajib dipilih.",
 			"gender.string" => "Jenis kelamin harus berupa teks.",

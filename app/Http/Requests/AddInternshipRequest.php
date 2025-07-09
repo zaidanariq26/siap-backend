@@ -28,7 +28,7 @@ class AddInternshipRequest extends FormRequest
 			"instructor_name" => "required|string|max:255",
 			"instructor_contact" => "required|string|regex:/^[0-9]+$/|min:10|max:15",
 			"teacher_contact" => "required|string|regex:/^[0-9]+$/|min:10|max:15",
-			"start_date" => "required|date|after_or_equal:today",
+			"start_date" => "required|date",
 			"end_date" => "required|date|after:start_date",
 		];
 	}

@@ -49,7 +49,6 @@ class ProfileController extends Controller
 				"birthplace" => $validatedData["birthplace"],
 				"birthdate" => $validatedData["birthdate"],
 				"contact" => $validatedData["contact"],
-				"religion" => $validatedData["religion"],
 				"gender" => $validatedData["gender"],
 				"emergency_contact" => $validatedData["emergency_contact"],
 				"emergency_contact_name" => $validatedData["emergency_contact_name"],
@@ -65,7 +64,6 @@ class ProfileController extends Controller
 			});
 
 			return response()->json([
-				"code" => 200,
 				"message" => "Profil Berhasil Diperbarui",
 				"data" => $user,
 			]);
@@ -74,7 +72,6 @@ class ProfileController extends Controller
 			Log::error($e);
 			return response()->json(
 				[
-					"code" => 500,
 					"message" => "Terjadi kesalahan saat memperbarui data. Silakan coba lagi!",
 					"error" => app()->environment("local") ? $e->getMessage() : null,
 				],
@@ -108,7 +105,6 @@ class ProfileController extends Controller
 				"birthplace" => $validatedData["birthplace"],
 				"birthdate" => $validatedData["birthdate"],
 				"contact" => $validatedData["contact"],
-				"religion" => $validatedData["religion"],
 				"gender" => $validatedData["gender"],
 			]);
 
@@ -129,7 +125,6 @@ class ProfileController extends Controller
 			DB::rollBack();
 			return response()->json(
 				[
-					"code" => 500,
 					"message" => "Terjadi kesalahan saat memperbarui data. Silakan coba lagi!",
 					"error" => app()->environment("local") ? $e->getMessage() : null,
 				],

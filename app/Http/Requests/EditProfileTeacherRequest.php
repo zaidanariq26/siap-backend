@@ -28,11 +28,10 @@ class EditProfileTeacherRequest extends FormRequest
 			"lastname" => "nullable|string|max:255",
 			"email" => "required|email|unique:users,email,{$userId},id_user",
 			"school" => "required|string|max:255",
-			"nip" => "required|string|regex:/^[0-9]+$/|digits:18",
+			"nip" => "nullable|string|regex:/^[0-9]+$/",
 			"birthplace" => "required|string|max:255",
 			"birthdate" => "required|date|before:today",
 			"contact" => "required|string|regex:/^[0-9]+$/|min:5|max:15",
-			"religion" => "required|string|in:islam,protestan,katolik,hindu,buddha,konghucu",
 			"gender" => "required|string|in:male,female",
 		];
 	}
@@ -48,10 +47,8 @@ class EditProfileTeacherRequest extends FormRequest
 			"email.email" => "Format email tidak valid.",
 			"email.unique" => "Email sudah digunakan.",
 
-			"nip.required" => "NIP wajib diisi.",
 			"nip.string" => "NIP harus berupa teks.",
 			"nip.regex" => "NIP hanya boleh berisi angka.",
-			"nip.digits" => "NIP harus terdiri dari 18 angka.",
 
 			"birthplace.required" => "Tempat lahir wajib diisi.",
 			"birthdate.required" => "Tanggal lahir wajib diisi.",
@@ -62,9 +59,6 @@ class EditProfileTeacherRequest extends FormRequest
 			"contact.regex" => "Kontak hanya boleh berisi angka.",
 			"contact.min" => "Kontak minimal terdiri dari 5 digit.",
 			"contact.max" => "Kontak tidak boleh lebih dari 15 digit.",
-
-			"religion.required" => "Kolom agama wajib diisi.",
-			"religion.in" => "Kolom agama tidak valid.",
 
 			"gender.required" => "Jenis kelamin wajib dipilih.",
 			"gender.in" => "Jenis kelamin tidak valid.",

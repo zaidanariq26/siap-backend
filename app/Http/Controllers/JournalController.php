@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Storage;
 
 class JournalController extends Controller
 {
-	public function getAllJournals()
+	public function getMyJournals()
 	{
 		try {
 			$userId = Auth::id();

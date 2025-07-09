@@ -21,19 +21,7 @@ class CheckProfileCompleteness
 		if ($user && $user->role == "peserta_didik") {
 			$student = $user->student;
 
-			$requiredFields = [
-				"npsn",
-				"school",
-				"major_id",
-				"homeroom_teacher_id",
-				"birthplace",
-				"birthdate",
-				"religion",
-				"contact",
-				"gender",
-				"emergency_contact",
-				"emergency_contact_name",
-			];
+			$requiredFields = ["npsn", "school", "major_id", "homeroom_teacher_id", "birthplace", "birthdate", "contact", "gender", "emergency_contact", "emergency_contact_name"];
 
 			foreach ($requiredFields as $field) {
 				if (empty($student->$field)) {
