@@ -63,8 +63,8 @@ class InternshipController extends Controller
 
 			Assesment::create([
 				"internship_id" => $internship->id_internship,
-				"name" => "Final Asesmen",
-				"status" => "needs_final_assesment",
+				"name" => "Asesmen 1",
+				"status" => "needs_assesment",
 			]);
 
 			$internship->loadMissing(["student", "teacher"]);
@@ -284,6 +284,40 @@ class InternshipController extends Controller
 			return response()->json(
 				[
 					"message" => "Terjadi kesalahan saat mengambil data presensi.",
+					"error" => app()->environment("local") ? $e->getMessage() : null,
+				],
+				500
+			);
+		}
+	}
+
+	public function createAssesment(Internship $internship)
+	{
+		try {
+			DB::beginTransaction();
+			$assessmentCount = $internship->assesments()->count() + 1;
+
+			$assesment = Assesment::create([
+				"internship_id" => $internship->id_internship,
+				"name" => "Asesmen {$assessmentCount}",
+				"status" => "needs_assesment",
+			]);
+
+			DB::commit();
+
+			return response()->json(
+				[
+					"message" => "Asesment Telah Berhasil Ditambahkan",
+					"data" => $assesment,
+				],
+				200
+			);
+		} catch (\Exception $e) {
+			DB::rollBack();
+
+			return response()->json(
+				[
+					"message" => "Terjadi kesalahan saat menambahkan asesmen. Silakan coba lagi!",
 					"error" => app()->environment("local") ? $e->getMessage() : null,
 				],
 				500

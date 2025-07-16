@@ -46,6 +46,9 @@ Route::middleware("auth")->group(function () {
 	Route::get("/internships/assigned", [InternshipController::class, "getAllInternshipsByRole"])->middleware(
 		"checkRole:guru_pembimbing,wali_kelas,kepala_program,manajemen_sekolah"
 	);
+	Route::post("/internships/{internship}/assesments/create", [InternshipController::class, "createAssesment"])->middleware(
+		"checkRole:guru_pembimbing,wali_kelas,kepala_program,manajemen_sekolah"
+	);
 
 	// Handle Attendance
 	Route::post("/attendances/create", [AttendanceController::class, "createAttendance"])->middleware(["checkRole:peserta_didik", "checkProfile"]);

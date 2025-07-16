@@ -46,7 +46,7 @@ class UpdateJournalRequest extends FormRequest
 			"image_path.required" => "Kolom lampiran wajib diisi.",
 			"image_path.image" => "File yang diunggah harus berupa gambar.",
 			"image_path.mimes" => "Format gambar harus jpeg, png, atau jpg.",
-			"image_path.max" => "Ukuran gambar tidak boleh lebih dari 20 MB.",
+			"image_path.max" => "Ukuran gambar tidak boleh lebih dari 1 MB.",
 		];
 	}
 }
